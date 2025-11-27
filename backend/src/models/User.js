@@ -40,4 +40,10 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
+userSchema.virtual('articles', {
+    ref: 'Article',
+    localField: '_id',
+    foreignField: 'author'
+});
+
 module.exports = mongoose.model('User', userSchema);

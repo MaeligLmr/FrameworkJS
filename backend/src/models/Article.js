@@ -16,7 +16,7 @@ const articleSchema = new mongoose.Schema(
             maxlength: [2000, "Le contenu ne peut pas dépasser 2000 caractères"],
         },
         author: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: [true, "L'auteur est obligatoire"],
         },
@@ -56,6 +56,7 @@ articleSchema.methods.incrementViews = function () {
     this.views += 1;
     return this.save();
 }
+
 
 articleSchema.statics.findPublished = function () {
     return this.find({ published: true }).sort({ createdAt: -1 });

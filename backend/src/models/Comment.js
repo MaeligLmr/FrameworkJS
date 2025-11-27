@@ -13,10 +13,9 @@ const commentSchema = new mongoose.Schema(
 
         // Auteur
         author: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
             required: [true, 'Auteur obligatoire'],
-            trim: true,
-            maxlength: [100, 'Maximum 100 caractères']
+            ref: 'User'
         },
 
         // Email (optionnel)

@@ -1,0 +1,52 @@
+const jwt = require('jsonwebtoken');
+
+// Authentification JWT + utilitaires de mot de passe
+
+const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
+
+/**
+ * Crée un token JWT à partir d'un objet utilisateur.
+ * On recommande de passer un objet minimal (id, email) pour éviter de stocker des données sensibles.
+ * @param {Object} user - objet contenant au minimum id et email 
+ * @param {String} [expiresIn] - durée d'expiration (ex: '1h', '7d')
+ * @returns {String} token
+ */
+function createToken(user, expiresIn = JWT_EXPIRES_IN) {
+    const payload = {
+        id: user.id,
+        email: user.email,
+    };
+    return jwt.sign(payload, JWT_SECRET, { expiresIn });
+}
+
+const AppError = require('../utils/AppError');
+
+exports.protect = async (req, res, next) => {
+  try {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+    if (!token) {
+      return next(new AppError('Vous n\'êtes pas connecté', 401));
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next(new AppError('L\'utilisateur n\'existe plus', 401));
+    }
+    req.user = { id: currentUser._id.toString(), role: currentUser.role };
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+
+module.exports = {
+    createToken,
+    authenticateToken
+}
