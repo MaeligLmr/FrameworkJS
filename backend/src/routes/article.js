@@ -3,6 +3,9 @@ import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArt
 
 export const router = express.Router();
 
+const auth = require('../middleware/auth');
+
+router.use(auth.protect);
 router.get('/', (req, res) => {
     getAllArticles(req, res);
 });

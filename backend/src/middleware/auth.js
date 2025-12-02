@@ -12,7 +12,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
  * @param {String} [expiresIn] - durée d'expiration (ex: '1h', '7d')
  * @returns {String} token
  */
-function createToken(user, expiresIn = JWT_EXPIRES_IN) {
+exports.createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
     const payload = {
         id: user.id,
         email: user.email,
