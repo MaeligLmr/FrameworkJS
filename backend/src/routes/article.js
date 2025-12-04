@@ -1,11 +1,11 @@
 import express from 'express';
-import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle } from '../controller/articleController.js';
+import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle, publishArticle, unpublishArticle } from '../controller/articleController.js';
+import { protect } from '../middleware/auth.js';
+import {router as commentRoutes} from './comment.js';
 
-export const router = express.Router();
+const router = express.Router();
 
-const auth = require('../middleware/auth');
-
-router.use(auth.protect);
+router.use(protect);
 router.get('/', (req, res) => {
     getAllArticles(req, res);
 });
@@ -30,8 +30,6 @@ router.patch('/:id/unpublish', (req, res) => {
     unpublishArticle(req, res);
 });
 
-// Import du router commentaires
-const commentRoutes = require('./comments');
 
 // Monter sur /:articleId/comments
 router.use('/:articleId/comments', commentRoutes);
@@ -41,3 +39,4 @@ router.delete('/:id', (req, res) => {
     deleteArticle(req, res);
 });
 
+export { router };

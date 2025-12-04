@@ -1,22 +1,18 @@
-const express = require('express');
+import { protect } from '../middleware/auth.js';
+import { createComment, getCommentsByArticle, getApprovedComments } from '../controller/commentController.js';
+import express from 'express';
 // mergeParams: true permet d'accéder à articleId du parent
 const router = express.Router({ mergeParams: true });
 
-const {
-    createComment,
-    getCommentsByArticle,
-    getApprovedComments
-} = require('../controllers/commentController');
 
-const auth = require('../middleware/auth');
-router.use(auth.protect);
+router.use(protect);
 
 // /api/articles/:articleId/comments
 router.route('/')
     .get(getCommentsByArticle)
     .post(createComment);
 
-// /api/articles/:articleId/comments/approuves
-router.get('/approuved', getApprovedComments);
+// /api/articles/:articleId/comments/approved
+router.get('/approved', getApprovedComments);
 
-module.exports = router;
+export { router };

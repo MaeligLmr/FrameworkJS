@@ -1,6 +1,5 @@
-const jwt = require('jsonwebtoken');
-
-// Authentification JWT + utilitaires de mot de passe
+import jwt from 'jsonwebtoken';
+import {AppError} from '../utils/AppError.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
@@ -12,7 +11,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
  * @param {String} [expiresIn] - durée d'expiration (ex: '1h', '7d')
  * @returns {String} token
  */
-exports.createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
+export const createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
     const payload = {
         id: user.id,
         email: user.email,
@@ -20,9 +19,8 @@ exports.createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
     return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }
 
-const AppError = require('../utils/AppError');
 
-exports.protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -42,11 +40,3 @@ exports.protect = async (req, res, next) => {
     next(err);
   }
 };
-
-
-
-
-module.exports = {
-    createToken,
-    authenticateToken
-}

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 const userSchema = new mongoose.Schema(
     {
         username: {
@@ -46,4 +46,5 @@ userSchema.virtual('articles', {
     foreignField: 'author'
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+export default User;

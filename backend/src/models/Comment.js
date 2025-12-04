@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 const commentSchema = new mongoose.Schema(
     {
         // Contenu du commentaire
@@ -23,7 +22,8 @@ const commentSchema = new mongoose.Schema(
             type: String,
             trim: true,
             lowercase: true,
-            match: [/^\w+[\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Email invalide']
+            // simple, reliable email pattern
+            match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email invalide']
         },
 
         // RÉFÉRENCE vers l'article
@@ -75,4 +75,4 @@ commentSchema.pre(/^find/, function (next) {
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
-module.exports = Comment;
+export default Comment;

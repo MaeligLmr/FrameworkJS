@@ -1,18 +1,18 @@
-const User = require('../models/User');
-const AppError = require('../utils/AppError');
-
-exports.signup = async (req, res, next) => {
+import User from '../models/User.js';
+import { AppError } from '../utils/AppError.js';
+import { createToken } from '../middleware/auth.js';
+export const signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
-    const user = await User.create({ name, email, password });
-    const token = exports.createToken(user);
-    res.status(201).json({ status: 'success', token, data: { user: { id: user._id, name: user.name, email: user.email } } });
+    const { username, email, password } = req.body;
+    const user = await User.create({ username, email, password });
+    const token = createToken(user);
+    res.status(201).json({ status: 'success', token, data: { user: { id: user._id, username: user.username, email: user.email } } });
   } catch (err) {
     next(err);
   }
 };
 
-exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -29,6 +29,6 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
   res.status(200).json({ status: 'success', message: 'Déconnexion réussie' });
 };

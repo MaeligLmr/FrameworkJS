@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Classe d'erreur applicative
  * Usage:

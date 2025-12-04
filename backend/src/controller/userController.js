@@ -1,4 +1,4 @@
-exports.getUserProfile = (req, res) => {
+export const getUserProfile = (req, res) => {
     const userId = req.user.id;
     // Logique pour récupérer le profil utilisateur depuis la base de données
     res.status(200).json({

@@ -1,10 +1,9 @@
-const Comment = require('../models/Comment');
-const Article = require('../models/Article');
-const AppError = require('../utils/AppError');
-const { catchAsync } = require('../middleware/errorHandler');
+import Comment from '../models/Comment.js';
+import  Article  from '../models/Article.js';
+import { AppError } from '../utils/AppError.js';
 
 // Créer un commentaire
-exports.createComment = catchAsync(async (req, res, next) => {
+export const createComment = async (req, res, next) => {
     const { articleId } = req.params;
 
     // ⚠️ IMPORTANT : Vérifier que l'article existe
@@ -25,11 +24,11 @@ exports.createComment = catchAsync(async (req, res, next) => {
         success: true,
         data: comment
     });
-});
+};
 
 // Récupérer les commentaires d'un article
 
-exports.getCommentsByArticle = catchAsync(async (req, res, next) => {
+export const getCommentsByArticle = async (req, res, next) => {
     const { articleId } = req.params;
 
     // Vérifier l'article
@@ -48,5 +47,20 @@ exports.getCommentsByArticle = catchAsync(async (req, res, next) => {
         count: comments.length,
         data: comments
     });
-});
+};
 
+export const getApprovedComments = async (req, res, next) => {
+    const { articleId } = req.params;
+    // Vérifier l'article
+    const article = await Article.findById(articleId);
+    if (!article) {
+        return next(new AppError('Article non trouvé', 404));
+    }
+    // Récupérer les commentaires approuvés
+    const comments = await Comment.findApprovedByArticle(articleId);
+    res.status(200).json({
+        success: true,
+        count: comments.length,
+        data: comments
+    });
+};
