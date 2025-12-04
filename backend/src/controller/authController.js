@@ -22,7 +22,7 @@ export const login = async (req, res, next) => {
     if (!user || !(await user.comparePassword(password))) {
       return next(new AppError('Email ou mot de passe incorrect', 401));
     }
-    const token = signToken(user._id);
+    const token = createToken(user);
     res.status(200).json({ status: 'success', token });
   } catch (err) {
     next(err);

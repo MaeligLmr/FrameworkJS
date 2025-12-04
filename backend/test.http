@@ -5,7 +5,7 @@
 @articleId = 
 
 # Instructions:
-# 1) Lancer le serveur backend (npm run dev dans backend/)
+# 1) Lancer le serveur backend (npm run dev dans backend/) + le docker pour la bdd
 # 2) Exécuter la requête Login ci-dessous, copier le token JWT renvoyé
 #    et coller la valeur dans la variable `@token` en haut de ce fichier
 #    (remplace la chaîne vide après `@token =`).
@@ -14,7 +14,7 @@
 ### Ping root
 GET {{baseUrl}}/
 
-### Signup (si présent)
+### Signup
 POST {{baseUrl}}/api/auth/signup
 Content-Type: application/json
 
@@ -29,7 +29,7 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test+user@example.com",
+  "email": "test.user@example.com",
   "password": "Password123!"
 }
 
