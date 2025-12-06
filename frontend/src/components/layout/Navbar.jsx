@@ -1,5 +1,34 @@
+import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
+
 export const Navbar = () => {
+  const { user, authToken, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <nav className="bg-blue-600 text-white p-4">Navbar</nav>
+    <nav className="p-4 gap-4 flex justify-between items-center w-full">
+        <Link to="/">Home</Link>
+        <Link to="/my-articles">Mes Articles</Link>
+        <Link to="/create">Nouvel Article</Link>
+
+        {authToken || user ? (
+          <>
+            <Link to="/profile">Profile</Link>
+            <button onClick={handleLogout} className="text-sm text-red-600">Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        )}
+    </nav>
   );
-}
+};
+
+export default Navbar;

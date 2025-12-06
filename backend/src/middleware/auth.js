@@ -16,7 +16,9 @@ export const createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
         id: user.id,
         email: user.email,
     };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn });
+    const jwt = jwt.sign(payload, JWT_SECRET, { expiresIn });
+    localStorage.setItem('token', jwt); // Stocke le token dans localStorage
+    return jwt;
 }
 
 

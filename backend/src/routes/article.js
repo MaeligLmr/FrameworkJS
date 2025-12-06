@@ -5,10 +5,12 @@ import {router as commentRoutes} from './comment.js';
 
 const router = express.Router();
 
-router.use(protect);
+
 router.get('/', (req, res) => {
     getAllArticles(req, res);
 });
+
+router.use(protect);
 
 router.get('/:id', (req, res) => {
     getArticleById(req, res);

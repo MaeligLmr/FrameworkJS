@@ -45,7 +45,7 @@ export const getArticleById = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
     try {
-        const articles = await Article.find();
+        const articles = await Article.find().sort({ createdAt: -1 });
         return res.status(200).json(articles);
     } catch (err) {
         return res.status(400).json({ error: err.message });

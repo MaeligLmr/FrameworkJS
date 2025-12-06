@@ -16,4 +16,10 @@ export async function signup(payload){
   });
 }
 
-export default { login, signup };
+export async function logout(){
+  return api.request('/auth/logout', {
+    method: 'POST',
+  });
+}
+
+export default { login, signup, logout };
