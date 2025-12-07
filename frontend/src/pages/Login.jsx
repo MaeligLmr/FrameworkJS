@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {LoginForm} from '../components/auth/LoginForm';
 import { useAuth } from '../context/AuthContext';
 
@@ -31,6 +31,7 @@ export const Login = () => {
       {error && <div className="mb-3 text-red-600">{error}</div>}
       <LoginForm onSubmit={handleSubmit} />
       {loading && <div className="mt-3">Connexion en cours…</div>}
+      <p>Pas encore de compte ? <Link to="/signup" className="text-blue-600 hover:text-blue-800">Inscrivez-vous</Link></p>
     </div>
   );
 }

@@ -14,9 +14,8 @@ export const createComment = async (req, res, next) => {
 
     // Créer le commentaire
     const comment = await Comment.create({
-        contenu: req.body.contenu,
-        auteur: req.body.auteur,
-        email: req.body.email,
+        content: req.body.content,
+        author: req.body.author,
         article: articleId// Lier à l'article
     });
 
@@ -63,4 +62,26 @@ export const getApprovedComments = async (req, res, next) => {
         count: comments.length,
         data: comments
     });
+};
+
+export const updateComment = async (req, res, next) => {
+    const { commentId } = req.params;
+    const updates = req.body;
+    const comment = await Comment.findByIdAndUpdate(commentId, updates, { new: true, runValidators: true });
+    if (!comment) {
+        return next(new AppError('Commentaire non trouvé', 404));
+    }
+    res.status(200).json({
+        success: true,
+        data: comment
+    });
+};
+
+export const deleteComment = async (req, res, next) => {
+    const { commentId } = req.params;
+    const comment = await Comment.findByIdAndDelete(commentId);
+    if (!comment) {
+        return next(new AppError('Commentaire non trouvé', 404));
+    }
+    res.status(204).json({ success: true, data: null });
 };

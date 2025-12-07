@@ -8,4 +8,12 @@ export async function postComment(articleId, payload){
   return api.request(`/articles/${articleId}/comments`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
 }
 
-export default { fetchComments, postComment };
+export async function updateComment(articleId, commentId, payload){
+  return api.request(`/articles/${articleId}/comments/${commentId}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+}
+
+export async function deleteComment(articleId, commentId){
+  return api.request(`/articles/${articleId}/comments/${commentId}`, {method:'DELETE'});
+}
+
+export default { fetchComments, postComment, updateComment, deleteComment };

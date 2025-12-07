@@ -39,6 +39,12 @@ export const protect = async (req, res, next) => {
     req.user = { id: currentUser._id.toString(), role: currentUser.role };
     next();
   } catch (err) {
+    if (err?.name === 'TokenExpiredError') {
+      return next(new AppError('TokenExpiredError', 401));
+    }
+    if (err?.name === 'JsonWebTokenError') {
+      return next(new AppError('Token invalide', 401));
+    }
     next(err);
   }
 };

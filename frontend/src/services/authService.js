@@ -6,7 +6,6 @@ export async function login(credentials){
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify(credentials)
   });
-  console.log(res);
   // store token in localStorage if present
   const token = res?.token;
   const user  = res?.user;

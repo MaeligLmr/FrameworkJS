@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/auth/RegisterForm';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -40,6 +40,7 @@ export const Register = () => {
       {error && <div className="mb-3 text-red-600">{error}</div>}
       <RegisterForm onSubmit={handleSubmit} />
       {loading && <div className="mt-3">Création du compte…</div>}
+      <p>Déjà un compte ? <Link to="/login" className="text-blue-600 hover:text-blue-800">Connectez-vous</Link></p>
     </div>
   );
 }

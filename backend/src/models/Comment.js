@@ -67,10 +67,16 @@ commentSchema.statics.findApprovedByArticle = function (articleId) {
 
 // Populate automatique
 commentSchema.pre(/^find/, function (next) {
-    this.populate({
-        path: 'article',
-        select: 'title author'
-    });
+    this.populate([
+        {
+            path: 'article',
+            select: 'title author'
+        },
+        {
+            path: 'author',
+            select: '_id username email'
+        }
+    ]);
     next();
 });
 
