@@ -5,11 +5,8 @@ export const signup = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     const user = await User.create({ username, email, password });
-    if (localStorage.getItem('token')) {
-      localStorage.removeItem('token'); // Supprime le token précédent s'il existe
-    }
     const token = createToken(user);
-    res.status(201).json({ status: 'success', token, data: { user: { id: user._id, username: user.username, email: user.email } } });
+    res.status(201).json({ status: 'success', token, user });
   } catch (err) {
     next(err);
   }
@@ -25,19 +22,14 @@ export const login = async (req, res, next) => {
     if (!user || !(await user.comparePassword(password))) {
       return next(new AppError('Email ou mot de passe incorrect', 401));
     }
-    if(localStorage.getItem('token')) {
-      localStorage.removeItem('token'); // Supprime le token précédent s'il existe
-    }
     const token = createToken(user);
-    res.status(200).json({ status: 'success', token });
+    res.status(200).json({ status: 'success', token, user });
   } catch (err) {
     next(err);
   }
 };
 
 export const logout = (req, res) => {
-  if (!localStorage.getItem('token')) {
-      localStorage.removeItem('token'); // Supprime le token du localStorage
-  }
+  // Server cannot clear client localStorage; just respond success.
   res.status(200).json({ status: 'success', message: 'Déconnexion réussie' });
 };

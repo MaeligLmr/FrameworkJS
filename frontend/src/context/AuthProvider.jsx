@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext';
 import * as authService  from '../services/authService';
 export const AuthProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState(() => localStorage.getItem('token'));
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
 
   const login = async (email, password) => {
     // Use authService which wraps api.request
@@ -11,12 +11,9 @@ export const AuthProvider = ({ children }) => {
     const token = res?.token || res?.data?.token || res?.data?.token;
     if (!token) throw new Error('Aucun token reçu du serveur');
 
-    localStorage.setItem('token', token);
     setAuthToken(token);
-
-    const returnedUser = res?.data?.user || res?.user || null;
+    const returnedUser = res?.user || null;
     if (returnedUser) setUser(returnedUser);
-
     return { token, user: returnedUser };
   };
 
@@ -25,7 +22,6 @@ export const AuthProvider = ({ children }) => {
     const token = res?.token || res?.data?.token || res?.data?.token;
     if (!token) throw new Error('Aucun token reçu du serveur');
 
-    localStorage.setItem('token', token);
     setAuthToken(token);
 
     const returnedUser = res?.data?.user || res?.user || null;

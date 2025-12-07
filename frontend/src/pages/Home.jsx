@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import articleService from '../services/articleService';
+import ArticleList from '../components/articles/ArticleList';
 
 export const Home = () => {
   const [articles, setArticles] = useState([]);
@@ -56,19 +56,7 @@ export const Home = () => {
       {articles.length === 0 ? (
         <div>Aucun article trouvé.</div>
       ) : (
-        <ul className="space-y-4">
-          {articles.map((a) => (
-            <li key={a._id || a.id} className="p-4 border rounded bg-white">
-              <Link to={`/articles/${a._id || a.id}`} className="text-lg font-semibold text-blue-600">
-                {a.title || a.name || 'Sans titre'}
-              </Link>
-              <div className="text-sm text-gray-600">
-                {a.author?.username || a.author || a.authorName || ''} — {new Date(a.publishedAt || a.createdAt || a.date || a.updatedAt).toLocaleString()}
-              </div>
-              <p className="mt-2 text-gray-800">{(a.content || a.excerpt || a.description || '').slice(0, 240)}{(a.content || a.excerpt || a.description || '').length > 240 ? '…' : ''}</p>
-            </li>
-          ))}
-        </ul>
+        <ArticleList articles={articles} />
       )}
     </main>
   );

@@ -92,6 +92,13 @@ articleSchema.post("save", function (doc) {
     console.log(`Article ${doc._id} sauvegardé avec succès.`);
 });
 
+articleSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: "author",
+        select: "username email"
+    });
+    next();
+});
 
 const Article = mongoose.model("Article", articleSchema);
 export default Article;

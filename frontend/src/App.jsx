@@ -8,6 +8,7 @@ import {MyArticles} from './pages/MyArticles'
 import {Login} from './pages/Login'
 import {Register} from './pages/Register'
 import {Profile} from './pages/Profile'
+import RequireAuth from './components/auth/RequireAuth';
 
 function App() {
   return (
@@ -16,8 +17,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
-        <Route path="/create" element={<CreateArticle />} />
-        <Route path="/my-articles" element={<MyArticles />} />
+        <Route path="/create" element={<RequireAuth><CreateArticle /></RequireAuth>} />
+        <Route path="/my-articles" element={<RequireAuth><MyArticles /></RequireAuth>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />

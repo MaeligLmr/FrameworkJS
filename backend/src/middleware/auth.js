@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {AppError} from '../utils/AppError.js';
+import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
@@ -16,9 +17,8 @@ export const createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
         id: user.id,
         email: user.email,
     };
-    const jwt = jwt.sign(payload, JWT_SECRET, { expiresIn });
-    localStorage.setItem('token', jwt); // Stocke le token dans localStorage
-    return jwt;
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn });
+  return token;
 }
 
 
@@ -31,7 +31,7 @@ export const protect = async (req, res, next) => {
     if (!token) {
       return next(new AppError('Vous n\'êtes pas connecté', 401));
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
       return next(new AppError('L\'utilisateur n\'existe plus', 401));

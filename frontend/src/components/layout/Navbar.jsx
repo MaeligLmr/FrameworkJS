@@ -13,8 +13,12 @@ export const Navbar = () => {
   return (
     <nav className="p-4 gap-4 flex justify-between items-center w-full">
         <Link to="/">Home</Link>
-        <Link to="/my-articles">Mes Articles</Link>
-        <Link to="/create">Nouvel Article</Link>
+        {authToken || user ? (
+          <>
+            <Link to="/my-articles">Mes Articles</Link>
+            <Link to="/create">Nouvel Article</Link>
+          </>
+        ) : null}
 
         {authToken || user ? (
           <>
