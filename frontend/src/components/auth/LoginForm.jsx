@@ -5,7 +5,6 @@ import { useState } from 'react';
 
 export const LoginForm = ({ onSubmit, loading = false }) => {
     const [showPassword, setShowPassword] = useState(false);
-
     const handleSubmit = (e) => {
         e.preventDefault();
         if (typeof onSubmit === 'function') {
@@ -28,13 +27,12 @@ export const LoginForm = ({ onSubmit, loading = false }) => {
                         required
                         className="w-full border rounded px-3 py-2"
                     />
-                    <button
-                        type="button"
+                    <Button
                         onClick={() => setShowPassword((v) => !v)}
                         className="absolute inset-y-0 right-3 text-sm text-gray-500"
                     >
                         {showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
-                    </button>
+                    </Button>
                 </div>
             </div>
             <div>

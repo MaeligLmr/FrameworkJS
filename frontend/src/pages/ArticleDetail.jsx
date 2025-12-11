@@ -8,6 +8,7 @@ import ArticleForm from '../components/articles/ArticleForm';
 import PopupConfirm from '../components/common/PopupConfirm';
 import CommentForm from '../components/comments/CommentForm';
 import CommentList from '../components/comments/CommentList';
+import { Button } from '../components/common/Button';
 
 export const ArticleDetail = () => {
   const { id } = useParams();
@@ -138,10 +139,10 @@ export const ArticleDetail = () => {
         </div>
         {isAuthor && (
           <div className="flex gap-2">
-            <button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded">Modifier</button>
-            <button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded disabled:opacity-50">
+            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded">Modifier</Button>
+            <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded disabled:opacity-50">
               {deleting ? 'Suppression...' : 'Supprimer'}
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -158,9 +159,9 @@ export const ArticleDetail = () => {
         {user ? (
           <div className="mb-6">
             {!showCommentForm && (
-              <button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-blue-600 text-white rounded">
+              <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-blue-600 text-white rounded">
                 Ajouter un commentaire
-              </button>
+              </Button>
             )}
             {showCommentForm && (
               <div className="p-4 border border-gray-200 rounded mb-4">
@@ -183,7 +184,7 @@ export const ArticleDetail = () => {
         ) : comments.length === 0 ? (
           <p className="text-gray-600">Aucun commentaire pour le moment.</p>
         ) : (
-          <CommentList comments={comments} onDelete={() => fetchComments()} />
+          <CommentList comments={comments} onCommentUpdated={() => fetchComments()} />
         )}
       </section>
       

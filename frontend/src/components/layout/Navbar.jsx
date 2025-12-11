@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { Button } from '../common/Button';
 
 export const Navbar = () => {
   const { user, authToken, logout } = useAuth();
@@ -23,7 +24,7 @@ export const Navbar = () => {
         {authToken || user ? (
           <>
             <Link to="/profile">Profile</Link>
-            <button onClick={handleLogout} className="text-sm text-red-600">Logout</button>
+            <Button onClick={handleLogout} className="text-sm text-red-600">Logout</Button>
           </>
         ) : (
           <>

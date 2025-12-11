@@ -11,11 +11,16 @@ router.get('/', (req, res) => {
     getAllArticles(req, res);
 });
 
-router.use(protect);
-
 router.get('/:id', (req, res) => {
     getArticleById(req, res);
 });
+
+router.use('/:articleId/comments', commentRoutes);
+
+
+router.use(protect);
+
+
 
 router.post('/', uploadImage('image'), (req, res) => {
     createArticle(req, res);
@@ -32,10 +37,6 @@ router.patch('/:id/publish', (req, res) => {
 router.patch('/:id/unpublish', (req, res) => {
     unpublishArticle(req, res);
 });
-
-
-// Monter sur /:articleId/comments
-router.use('/:articleId/comments', commentRoutes);
 
 
 router.delete('/:id', (req, res) => {
