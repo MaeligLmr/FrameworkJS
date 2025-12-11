@@ -26,8 +26,7 @@ export const ArticleDetail = () => {
   const [commentsError, setCommentsError] = useState([]);
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const isAuthor = article && user && (article.author?._id === user._id || article.author?.id === user.id);
-
+  const isAuthor = article && user && (article.author?._id === user._id);
   useEffect(() => {
     let mounted = true;
     const fetchOne = async () => {
@@ -53,7 +52,8 @@ export const ArticleDetail = () => {
     setCommentsError([]);
     try {
       const res = await commentService.fetchComments(id);
-      const commentList = res?.data || res || [];
+      let commentList = res?.data || res || [];
+      commentList = commentList.filter(c => !c.comment); // only top-level comments
       setComments(Array.isArray(commentList) ? commentList : []);
     } catch (err) {
       setCommentsError(err?.errors || ['Erreur lors du chargement des commentaires']);

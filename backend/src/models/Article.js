@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary.js";
 
 const articleSchema = new mongoose.Schema(
     {
@@ -88,14 +89,6 @@ articleSchema.virtual("comments", {
     foreignField: "article"
 });
 
-articleSchema.pre("save", function (next) {
-    console.log(`Sauvegarde de l'article : ${this.title}`);
-    next();
-});
-
-articleSchema.post("save", function (doc) {
-    console.log(`Article ${doc._id} sauvegardé avec succès.`);
-});
 
 articleSchema.pre(/^find/, function (next) {
     this.populate({
@@ -103,6 +96,31 @@ articleSchema.pre(/^find/, function (next) {
         select: "username email"
     });
     next();
+});
+
+articleSchema.pre('findOneAndDelete', async function (next) {
+    try {
+        const doc = await this.model.findOne(this.getFilter());
+        if (!doc) return next();
+
+        // Delete associated comments
+        await mongoose.model('Comment').deleteMany({ article: doc._id });
+
+        // Delete image from Cloudinary if exists
+        if (doc.imageUrl) {
+            const publicIdMatch = doc.imageUrl.match(/\/articles\/([^/.]+)/);
+            if (publicIdMatch) {
+                const publicId = `articles/${publicIdMatch[1]}`;
+                await cloudinary.uploader.destroy(publicId).catch(err => {
+                    console.error('Error deleting image from Cloudinary:', err);
+                });
+            }
+        }
+
+        next();
+    } catch (err) {
+        next(err);
+    }
 });
 
 const Article = mongoose.model("Article", articleSchema);

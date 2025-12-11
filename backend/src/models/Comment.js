@@ -33,6 +33,12 @@ const commentSchema = new mongoose.Schema(
             required: [true, 'Article obligatoire']
         },
 
+        comment :{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment',
+            default: null
+        },
+
         // Modération
         approved: {
             type: Boolean,
@@ -65,12 +71,35 @@ commentSchema.statics.findApprovedByArticle = function (articleId) {
         .sort({ createdAt: -1 });
 };
 
+// Populate responses (replies) pour un commentaire
+commentSchema.methods.populateResponses = async function () {
+    await this.populate({
+        path: 'responses',
+        select: '_id content author createdAt',
+        populate: {
+            path: 'author',
+            select: '_id username email'
+        }
+    });
+    return this;
+};
+
+commentSchema.virtual('responses', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'comment'
+});
+
 // Populate automatique
 commentSchema.pre(/^find/, function (next) {
     this.populate([
         {
             path: 'article',
             select: 'title author'
+        },
+        {
+            path: 'comment',
+            select: 'content author createdAt'
         },
         {
             path: 'author',

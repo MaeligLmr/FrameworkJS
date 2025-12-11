@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import commentService from "../../services/commentService";
 import CommentForm from "./CommentForm";
 import PopupConfirm from "../common/PopupConfirm";
+import { Button } from "../common/Button";
+import CommentList from "./CommentList";
 
 const CommentCard = ({ comment, onCommentUpdated }) => {
     const { id: articleId } = useParams();
@@ -12,8 +14,11 @@ const CommentCard = ({ comment, onCommentUpdated }) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState(null);
     const [updating, setUpdating] = useState(false);
+    const [responding, setResponding] = useState(false);
+    const [isResponding, setIsResponding] = useState(false);
     const { user } = useAuth();
     const isAuthor = user?._id === comment.author?._id;
+    console.log(comment);
 
     const handleDelete = async () => {
         setError(null);
@@ -41,6 +46,20 @@ const CommentCard = ({ comment, onCommentUpdated }) => {
         }
     };
 
+    const handleRespond = async (content) => {
+        setResponding(true);
+        setError(null);
+        try {
+            console.log(comment);
+            await commentService.postComment(articleId, { content, comment: comment._id});
+        } catch (err) {
+            setError(err?.message || 'Erreur lors de la réponse');
+        } finally {
+            setIsResponding(false);
+            if (typeof onCommentUpdated === 'function') onCommentUpdated();
+        }
+    }
+
     if(isEditing && isAuthor) {
         return (
             <li className="p-4 border border-gray-200 rounded">
@@ -62,6 +81,15 @@ const CommentCard = ({ comment, onCommentUpdated }) => {
                     <button onClick={() => setIsEditing(true)} disabled={isDeleting} className="text-blue-600 hover:text-blue-800"><i className="fas fa-edit"></i> Modifier</button>
                     <button onClick={() => setShowConfirm(true)} disabled={isDeleting} className="text-red-600 hover:text-red-800"><i className="fas fa-trash"></i> Supprimer</button>
                 </div>
+            )}
+            <Button onClick={() => setIsResponding(true)}>Répondre</Button>
+            <CommentList comments={comment.responses || []} onCommentUpdated={onCommentUpdated} />
+            {isResponding && (
+                <CommentForm
+                    onSubmit={handleRespond}
+                    loading={responding}
+                    onCancel={() => setIsResponding(false)}
+                />
             )}
             {showConfirm && (
                 <PopupConfirm

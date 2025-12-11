@@ -23,7 +23,7 @@ export const CreateArticle = () => {
       else navigate('/');
     } catch (err) {
       // try to extract validation errors array
-      setError(err?.errors || err?.message ? [err.message || JSON.stringify(err)] : [JSON.stringify(err)]);
+      setError(err?.errors);
     } finally {
       setLoading(false);
     }
