@@ -4,6 +4,12 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const handleTokenExpired = (status) => {
   const isExpired = status === 401;
   if (!isExpired) return;
+  
+  // Don't redirect if already on login/register pages
+  if (typeof window !== 'undefined' && (window.location.pathname === '/login' || window.location.pathname === '/register')) {
+    return;
+  }
+  
   try {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

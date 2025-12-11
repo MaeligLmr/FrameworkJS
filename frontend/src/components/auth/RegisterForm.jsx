@@ -1,10 +1,20 @@
 import Input from '../common/Input';
 import Loader from '../common/Loader';
 import { Button } from '../common/Button';
+import { useState } from 'react';
 
 const RegisterForm = ({ onSubmit, loading = false }) => {
+	const [showPassword, setShowPassword] = useState(false);
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (typeof onSubmit === 'function') {
+			onSubmit(e);
+		}
+	};
+
 	return (
-		<form onSubmit={onSubmit} className="space-y-4">
+		<form onSubmit={handleSubmit} className="space-y-4">
 			<div>
 				<label className="block text-sm font-medium mb-1">Nom d'utilisateur</label>
 				<Input name="username" required className="w-full border rounded px-3 py-2" />
@@ -15,8 +25,21 @@ const RegisterForm = ({ onSubmit, loading = false }) => {
 			</div>
 			<div>
 				<label className="block text-sm font-medium mb-1">Mot de passe</label>
-				<Input name="password" type="password" required className="w-full border rounded px-3 py-2" />
-			</div>
+				<div className="relative">
+                    <Input
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute inset-y-0 right-3 text-sm text-gray-500"
+                    >
+                        {showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
+                    </button>
+                </div></div>
 			<div>
 				{loading ? (
 					<Loader />

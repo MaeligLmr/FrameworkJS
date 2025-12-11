@@ -8,7 +8,13 @@ export const signup = async (req, res, next) => {
     const token = createToken(user);
     res.status(201).json({ status: 'success', token, user });
   } catch (err) {
-    next(err);
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(e => e.message);
+      const appError = new AppError('Erreur de validation des données', 400, errors);
+      return res.status(appError.statusCode).json(appError.toJSON());
+    }
+    const appError = new AppError('Erreur lors de l\'inscription', 500, [err.message || 'Erreur inconnue']);
+    return res.status(appError.statusCode).json(appError.toJSON());
   }
 };
 
@@ -16,16 +22,19 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return next(new AppError('Veuillez fournir email et mot de passe', 400));
+      const appError = new AppError('Email et mot de passe sont requis', 400);
+      return res.status(appError.statusCode).json(appError.toJSON());
     }
     const user = await User.findOne({ email }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
-      return next(new AppError('Email ou mot de passe incorrect', 401));
+      const appError = new AppError('Erreur d\'authentification', 401, ['Email ou mot de passe incorrect']);
+      return res.status(appError.statusCode).json(appError.toJSON());
     }
     const token = createToken(user);
     res.status(200).json({ status: 'success', token, user });
   } catch (err) {
-    next(err);
+    const appError = new AppError('Erreur lors de la connexion', 500, [err.message || 'Erreur inconnue']);
+    return res.status(appError.statusCode).json(appError.toJSON());
   }
 };
 
