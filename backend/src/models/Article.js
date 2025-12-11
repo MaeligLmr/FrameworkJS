@@ -29,6 +29,11 @@ const articleSchema = new mongoose.Schema(
             enum: ["Technologie", "Santé", "Finance", "Éducation", "Divertissement"],
             required: [true, "La catégorie est obligatoire"],
         },
+        imageUrl: {
+            type: String,
+            trim: true,
+            match: [/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/, "URL d'image invalide"],
+        },
         views: {
             type: Number,
             default: 0,

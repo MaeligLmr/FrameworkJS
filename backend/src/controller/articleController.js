@@ -8,8 +8,9 @@ import Article from '../models/Article.js';
  */
 export const createArticle = async (req, res) => {
     const { title, content, author, category } = req.body;
+    const imageUrl = req.file?.path || req.body.imageUrl;
     try {
-        const newArticle = new Article({ title, content, author, category });
+        const newArticle = new Article({ title, content, author, category, imageUrl });
         const saved = await newArticle.save();
         return res.status(201).json({success : true, message : "Article créé avec succès", data : saved});
     } catch (err) {
@@ -54,7 +55,12 @@ export const getAllArticles = async (req, res) => {
 
 export const updateArticle = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body };
+    if (req.file?.path) {
+        updates.imageUrl = req.file.path;
+    }
+    // éviter le changement d'auteur via update
+    if (updates.author) delete updates.author;
     try {
         const article = await Article.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!article) {

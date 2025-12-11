@@ -9,11 +9,23 @@ export async function fetchArticle(id){
 }
 
 export async function createArticle(payload){
-  return api.request('/articles', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  const formData = new FormData();
+  Object.entries(payload || {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value);
+    }
+  });
+  return api.request('/articles', {method:'POST', body: formData});
 }
 
 export async function updateArticle(id, payload){
-  return api.request(`/articles/${id}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  const formData = new FormData();
+  Object.entries(payload || {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value);
+    }
+  });
+  return api.request(`/articles/${id}`, {method:'PUT', body: formData});
 }
 
 export async function deleteArticle(id){

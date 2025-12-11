@@ -16,10 +16,12 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
+    const file = form.image?.files?.[0];
     const payload = {
       title: form.title.value,
       category: form.category.value,
       content: form.content.value,
+      image: file || undefined,
     };
     if (typeof onSubmit === 'function') await onSubmit(payload);
   };
@@ -50,6 +52,11 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
       <div>
         <label className="block text-sm font-medium mb-1">Contenu</label>
         <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded px-3 py-2 h-48" />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Image</label>
+        <input type="file" name="image" accept="image/*" className="w-full" />
       </div>
 
       <div>

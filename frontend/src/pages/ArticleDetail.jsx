@@ -95,6 +95,9 @@ export const ArticleDetail = () => {
     try {
       setUpdating(true);
       const body = { ...payload };
+      if (!body.image && article.imageUrl) {
+        body.imageUrl = article.imageUrl;
+      }
       if (user?._id) body.author = user._id;
       const res = await articleService.updateArticle(id, body);
       const updated = res?.data || res;
@@ -141,6 +144,9 @@ export const ArticleDetail = () => {
             </button>
           </div>
         )}
+      </div>
+      <div>
+        {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} className="w-full max-h-96 object-cover rounded mt-4" />}
       </div>
       <div className="prose prose-lg mt-6">
         {article.content}
