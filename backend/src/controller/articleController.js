@@ -30,6 +30,27 @@ export const createArticle = async (req, res) => {
     }
 }
 
+export const getCountArticlesByAuthor = async (req, res) => {
+    const { authorId } = req.params;
+    try {
+        const count = await Article.countDocuments({ author: authorId });
+        return res.status(200).json({ count });
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+}
+
+export const getViewsByAuthor = async (req, res) => {
+    const { authorId } = req.params;
+    try {
+        const articles = await Article.find({ author: authorId });
+        const totalViews = articles.reduce((sum, article) => sum + article.views, 0);
+        return res.status(200).json({ count: totalViews });
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+}
+
 export const getArticleById = async (req, res) => {
     const { id } = req.params;
     try {

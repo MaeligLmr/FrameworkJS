@@ -32,4 +32,12 @@ export async function deleteArticle(id){
   return api.request(`/articles/${id}`, {method:'DELETE'});
 }
 
-export default { fetchArticles, createArticle, fetchArticle, updateArticle, deleteArticle };
+export async function getCountArticlesByAuthor(authorId) {
+  return api.request(`/articles/author/count/${authorId}`);
+}
+
+export async function getViewsByAuthor(authorId) {
+  return api.request(`/articles/author/views/${authorId}`);
+}
+
+export default { fetchArticles, createArticle, fetchArticle, updateArticle, deleteArticle, getCountArticlesByAuthor, getViewsByAuthor };

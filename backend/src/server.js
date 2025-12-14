@@ -4,6 +4,7 @@ import { connectDB } from './config/database.js';
 import { router as articleRoutes } from './routes/article.js';
 import { router as authRoutes } from './routes/auth.js';
 import { router as commentRoutes } from './routes/comment.js';
+import userRoutes from './routes/user.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use(cors({
 app.use('/api/articles', articleRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/articles/:articleId/comments', commentRoutes);
+app.use('/api/users', userRoutes);
 
 
 async function startServer() {

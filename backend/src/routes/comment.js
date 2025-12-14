@@ -1,5 +1,5 @@
 import { protect } from '../middleware/auth.js';
-import { createComment, getCommentsByArticle, getApprovedComments, updateComment, deleteComment } from '../controller/commentController.js';
+import { createComment, getCommentsByArticle, getApprovedComments, updateComment, deleteComment, getCountCommentsByAuthor } from '../controller/commentController.js';
 import express from 'express';
 // mergeParams: true permet d'accéder à articleId du parent
 const router = express.Router({ mergeParams: true });
@@ -11,6 +11,7 @@ router.get('/approved', getApprovedComments);
 
 router.use(protect);
 
+router.get('/author/count/:authorId', getCountCommentsByAuthor);
 
 router.put('/:commentId', updateComment);
 

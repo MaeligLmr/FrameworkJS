@@ -3,8 +3,8 @@ import { AppError } from '../utils/AppError.js';
 import { createToken } from '../middleware/auth.js';
 export const signup = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
-    const user = await User.create({ username, email, password });
+    const { username, firstname, lastname, email, password } = req.body;
+    const user = await User.create({ username, firstname, lastname, email, password });
     const token = createToken(user);
     res.status(201).json({ status: 'success', token, user });
   } catch (err) {

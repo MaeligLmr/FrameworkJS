@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import commentService from "../../services/commentService";
 import CommentForm from "./CommentForm";
 import PopupConfirm from "../common/PopupConfirm";
-import { Button } from "../common/Button";
+import Button from "../common/Button";
 import CommentList from "./CommentList";
 
 const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = false }) => {
@@ -87,7 +87,7 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
         setResponding(true);
         setError(null);
         try {
-            const newReply = await commentService.postComment(articleId, { content, comment: comment._id});
+            const newReply = await commentService.postComment(articleId, { content, comment: comment._id, author: user?._id });
             setIsResponding(false);
             // Update local comment with new response
             setLocalComment(prev => ({

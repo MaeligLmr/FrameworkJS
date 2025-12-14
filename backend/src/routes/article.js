@@ -1,5 +1,5 @@
 import express from 'express';
-import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle, publishArticle, unpublishArticle } from '../controller/articleController.js';
+import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle, publishArticle, unpublishArticle, getCountArticlesByAuthor, getViewsByAuthor } from '../controller/articleController.js';
 import { uploadImage } from '../config/cloudinary.js';
 import { protect } from '../middleware/auth.js';
 import {router as commentRoutes} from './comment.js';
@@ -21,7 +21,13 @@ router.use('/:articleId/comments', commentRoutes);
 router.use(protect);
 
 
+router.get('/author/count/:authorId', (req, res) => {
+    getCountArticlesByAuthor(req, res);
+});
 
+router.get('/author/views/:authorId', (req, res) => {
+    getViewsByAuthor(req, res);
+});
 router.post('/', uploadImage('image'), (req, res) => {
     createArticle(req, res);
 });

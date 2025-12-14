@@ -1,6 +1,6 @@
 import Input from '../common/Input';
 import Loader from '../common/Loader';
-import { Button } from '../common/Button';
+import Button from '../common/Button';
 import { useState } from 'react';
 
 export const LoginForm = ({ onSubmit, loading = false }) => {
@@ -16,7 +16,7 @@ export const LoginForm = ({ onSubmit, loading = false }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
-                <Input name="email" type="email" required className="w-full border rounded px-3 py-2" />
+                <Input name="email" type="email" required />
             </div>
             <div>
                 <label className="block text-sm font-medium mb-1">Mot de passe</label>
@@ -25,7 +25,7 @@ export const LoginForm = ({ onSubmit, loading = false }) => {
                         name="password"
                         type={showPassword ? 'text' : 'password'}
                         required
-                        className="w-full border rounded px-3 py-2"
+                    
                     />
                     <Button
                         onClick={() => setShowPassword((v) => !v)}

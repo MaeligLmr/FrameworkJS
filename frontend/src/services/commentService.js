@@ -16,4 +16,8 @@ export async function deleteComment(articleId, commentId){
   return api.request(`/articles/${articleId}/comments/${commentId}`, {method:'DELETE'});
 }
 
-export default { fetchComments, postComment, updateComment, deleteComment };
+export async function getCountCommentsByAuthor(authorId) {
+  return api.request(`/articles/:articleId/comments/author/count/${authorId}`);
+}
+
+export default { fetchComments, postComment, updateComment, deleteComment, getCountCommentsByAuthor };

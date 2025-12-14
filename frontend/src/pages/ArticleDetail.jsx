@@ -8,7 +8,7 @@ import ArticleForm from '../components/articles/ArticleForm';
 import PopupConfirm from '../components/common/PopupConfirm';
 import CommentForm from '../components/comments/CommentForm';
 import CommentList from '../components/comments/CommentList';
-import { Button } from '../components/common/Button';
+import Button from '../components/common/Button';
 
 export const ArticleDetail = () => {
   const { id } = useParams();

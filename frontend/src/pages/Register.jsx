@@ -13,13 +13,19 @@ export const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);
+    if(e.target.password.value !== e.target.confirmPassword.value) {
+      setErrors(['Les mots de passe ne correspondent pas']);
+      return;
+    }
     const username = e.target.username.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const firstname = e.target.firstname.value;
+    const lastname = e.target.lastname.value;
     try {
       setLoading(true);
       // call signup endpoint
-      await authService.signup({ username, email, password });
+      await authService.signup({ username, firstname, lastname, email, password });
       // after signup, try login automatically
       await login(email, password);
       navigate('/');

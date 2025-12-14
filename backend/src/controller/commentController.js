@@ -33,6 +33,16 @@ export const createComment = async (req, res, next) => {
     }
 };
 
+export const getCountCommentsByAuthor = async (req, res, next) => {
+    try {
+        const { authorId } = req.params;
+        const count = await Comment.countDocuments({ author: authorId });
+        res.status(200).json({ count });
+    } catch (err) {
+        next(AppError.from(err));
+    }
+};
+
 // Récupérer les commentaires d'un article
 
 export const getCommentsByArticle = async (req, res, next) => {

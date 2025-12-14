@@ -1,8 +1,16 @@
 import Input from '../common/Input';
-import { Button } from '../common/Button';
+import Button from '../common/Button';
 import Loader from '../common/Loader';
+import Select from 'react-select';
 
-const CATEGORIES = ['Technologie', 'Santé', 'Finance', 'Éducation', 'Divertissement'];
+const CATEGORIES = [
+  { value: 'Technologie', label: 'Technologie' },
+  { value: 'Santé', label: 'Santé' },
+  { value: 'Science', label: 'Science' },
+  { value: 'Affaires', label: 'Affaires' },
+  { value: 'Divertissement', label: 'Divertissement' },
+  { value: 'Sports', label: 'Sports' }
+];
 
 /**
  * Uncontrolled ArticleForm
@@ -38,15 +46,17 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
 
       <div>
         <label className="block text-sm font-medium mb-1">Titre</label>
-        <Input name="title" defaultValue={initialValues.title || ''} required className="w-full border rounded px-3 py-2" />
+        <Input name="title" defaultValue={initialValues.title || ''} required />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">Catégorie</label>
-        <select name="category" defaultValue={initialValues.category || ''} required className="w-full border rounded px-3 py-2">
-          <option value="">-- Choisir --</option>
-          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
+        <Select
+          name="category"
+          options={CATEGORIES}
+          defaultValue={initialValues.category || CATEGORIES[0]}
+          required
+        />
       </div>
 
       <div>

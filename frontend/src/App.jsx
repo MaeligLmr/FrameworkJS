@@ -21,7 +21,7 @@ function App() {
         <Route path="/my-articles" element={<RequireAuth><MyArticles /></RequireAuth>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
       </Routes>
       <Footer />
     </div>

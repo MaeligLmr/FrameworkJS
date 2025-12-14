@@ -9,6 +9,18 @@ const userSchema = new mongoose.Schema(
             trim: true,
             maxlength: [50, 'Le nom d\'utilisateur ne peut pas dépasser 50 caractères']
         },
+        firstname: {
+            type: String,
+            required: [true, 'Le prénom est obligatoire'],
+            trim: true,
+            maxlength: [50, 'Le prénom ne peut pas dépasser 50 caractères']
+        },
+        lastname: {
+            type: String,
+            required: [true, 'Le nom est obligatoire'],
+            trim: true,
+            maxlength: [100, 'Le nom ne peut pas dépasser 100 caractères']
+        },
         email: {
             type: String,
             required: [true, 'L\'email est obligatoire'],
