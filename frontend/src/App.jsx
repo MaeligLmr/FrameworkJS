@@ -9,8 +9,20 @@ import {Login} from './pages/Login'
 import {Register} from './pages/Register'
 import {Profile} from './pages/Profile'
 import RequireAuth from './components/auth/RequireAuth';
+import { useAuth } from './context/AuthContext';
+import Loader from './components/common/Loader';
 
 function App() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Header />

@@ -42,3 +42,30 @@ export const logout = (req, res) => {
   // Server cannot clear client localStorage; just respond success.
   res.status(200).json({ status: 'success', message: 'Déconnexion réussie' });
 };
+
+export const checkToken = (req, res) => {
+  res.status(200).json({ status: 'success', valid: true });
+}
+
+export const verifyToken = async (req, res, next) => {
+  try {
+    // req.user is already set by authenticateToken middleware
+    const userId = req.user?.id;
+    if (!userId) {
+      const appError = new AppError('Token invalide', 401, ['Token invalide ou expiré']);
+      return res.status(appError.statusCode).json(appError.toJSON());
+    }
+    
+    // Fetch fresh user data
+    const user = await User.findById(userId).select('-password');
+    if (!user) {
+      const appError = new AppError('Utilisateur introuvable', 404, ['Utilisateur introuvable']);
+      return res.status(appError.statusCode).json(appError.toJSON());
+    }
+    
+    res.status(200).json({ status: 'success', user });
+  } catch (err) {
+    const appError = new AppError('Erreur lors de la vérification du token', 500, [err.message || 'Erreur inconnue']);
+    return res.status(appError.statusCode).json(appError.toJSON());
+  }
+}

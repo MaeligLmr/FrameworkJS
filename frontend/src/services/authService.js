@@ -44,4 +44,27 @@ export async function logout(){
   });
 }
 
-export default { login, signup, logout };
+export async function checkToken(){
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  try {
+    const res = await api.request('/auth/verify', {
+      method: 'GET',
+      headers: {'Authorization': `Bearer ${token}`},
+    });
+    // Update user in localStorage if returned
+    if (res?.user) {
+      try { localStorage.setItem('user', JSON.stringify(res.user)); } catch { /* ignore */ }
+    }
+    return res?.user || null;
+  } catch {
+    // Token invalid, clear localStorage
+    try { 
+      localStorage.removeItem('token'); 
+      localStorage.removeItem('user'); 
+    } catch { /* ignore */ }
+    return null;
+  }
+}
+
+export default { login, signup, logout, checkToken };
