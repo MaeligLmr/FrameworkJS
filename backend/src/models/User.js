@@ -33,6 +33,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Le mot de passe est obligatoire'],
             minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères']
+        },
+        avatar: {
+            type: String,
+            default: null
+        },
+        avatarPublicId: {
+            type: String,
+            default: null
+        },
+        avatarImageName: {
+            type: String,
+            default: null
         }
     },
     {

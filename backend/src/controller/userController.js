@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import { AppError } from "../utils/AppError.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const getUserProfile = async (req, res, next) => {
     try {
@@ -29,6 +30,11 @@ export const updateUserProfile = async (req, res, next) => {
             return next(new AppError('Utilisateur non authentifié', 401, ['Authentification requise']));
         }
 
+        const user = await User.findById(userId);
+        if (!user) {
+            return next(new AppError('Utilisateur non trouvé', 404, ['Utilisateur non trouvé']));
+        }
+
         const { username, firstname, lastname, email } = req.body;
         const updates = {};
         
@@ -37,7 +43,22 @@ export const updateUserProfile = async (req, res, next) => {
         if (lastname !== undefined) updates.lastname = lastname;
         if (email !== undefined) updates.email = email;
 
-        const user = await User.findByIdAndUpdate(userId, updates, { 
+        // Handle avatar upload
+        if (req.file) {
+            // Delete old avatar if exists
+            if (user.avatarPublicId) {
+                try {
+                    await cloudinary.uploader.destroy(user.avatarPublicId);
+                } catch (err) {
+                    console.error('Error deleting old avatar:', err);
+                }
+            }
+            updates.avatar = req.file.path;
+            updates.avatarPublicId = req.file.filename;
+            updates.avatarImageName = req.file.originalname;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updates, { 
             new: true, 
             runValidators: true 
         }).select('-password');
@@ -45,7 +66,7 @@ export const updateUserProfile = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: 'Profil mis à jour avec succès',
-            data: user
+            data: updatedUser
         });
     } catch (err) {
         next(AppError.from(err));

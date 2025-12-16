@@ -35,6 +35,15 @@ const articleSchema = new mongoose.Schema(
             trim: true,
             match: [/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/, "URL d'image invalide"],
         },
+        imageName: {
+            type: String,
+            trim: true,
+        },
+        imageExtension: {
+            type: String,
+            trim: true,
+            enum: ["jpg", "jpeg", "png", "gif", "webp"],
+        },
         views: {
             type: Number,
             default: 0,

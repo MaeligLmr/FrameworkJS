@@ -43,10 +43,6 @@ export const logout = (req, res) => {
   res.status(200).json({ status: 'success', message: 'Déconnexion réussie' });
 };
 
-export const checkToken = (req, res) => {
-  res.status(200).json({ status: 'success', valid: true });
-}
-
 export const verifyToken = async (req, res, next) => {
   try {
     // req.user is already set by authenticateToken middleware

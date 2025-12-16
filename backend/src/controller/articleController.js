@@ -9,8 +9,10 @@ import Article from '../models/Article.js';
 export const createArticle = async (req, res) => {
     const { title, content, author, category } = req.body;
     const imageUrl = req.file?.path || req.body.imageUrl;
+    const imageName = req.file?.originalname || req.body.imageName;
+    const imageExtension = req.file?.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i)?.[1].toLowerCase() || req.body.imageExtension;
     try {
-        const newArticle = new Article({ title, content, author, category, imageUrl });
+        const newArticle = new Article({ title, content, author, category, imageUrl, imageName, imageExtension });
         const saved = await newArticle.save();
         return res.status(201).json({success : true, message : "Article créé avec succès", data : saved});
     } catch (err) {
@@ -79,6 +81,11 @@ export const updateArticle = async (req, res) => {
     const updates = { ...req.body };
     if (req.file?.path) {
         updates.imageUrl = req.file.path;
+        updates.imageName = req.file.originalname;
+        const extMatch = req.file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+        if (extMatch) {
+            updates.imageExtension = extMatch[1].toLowerCase();
+        }
     }
     // éviter le changement d'auteur via update
     if (updates.author) delete updates.author;
