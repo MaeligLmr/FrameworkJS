@@ -11,6 +11,11 @@ export const createComment = async (req, res, next) => {
         if (!article) {
             return next(new AppError('Article non trouvé', 404, ['Article non trouvé']));
         }
+        
+        // Vérifier que l'article est publié
+        if (!article.published) {
+            return next(new AppError('Impossible de commenter un article non publié', 403, ['Cet article n\'est pas encore publié']));
+        }
 
         const content = req.body.content || req.body.text;
         if (!content) {

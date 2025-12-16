@@ -1,7 +1,7 @@
 import api from './api';
 
 export async function fetchArticles(params = {}){
-  const { search, category, page, limit, sort } = params;
+  const { search, category, page, limit, sort, showDrafts } = params;
   const queryParams = new URLSearchParams();
   
   if (search) queryParams.append('search', search);
@@ -9,6 +9,7 @@ export async function fetchArticles(params = {}){
   if (page) queryParams.append('page', page);
   if (limit) queryParams.append('limit', limit);
   if (sort) queryParams.append('sort', sort);
+  if (showDrafts) queryParams.append('showDrafts', showDrafts);
   
   const queryString = queryParams.toString();
   return api.request(`/articles${queryString ? `?${queryString}` : ''}`);

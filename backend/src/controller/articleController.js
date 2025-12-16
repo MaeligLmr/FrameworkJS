@@ -7,14 +7,24 @@ import Article from '../models/Article.js';
  * @returns {Promise<import('express').Response>} Réponse JSON avec l'article créé (201) ou une erreur (4xx/5xx)
  */
 export const createArticle = async (req, res) => {
-    const { title, content, author, category } = req.body;
+    const { title, content, author, category, published } = req.body;
     const imageUrl = req.file?.path || req.body.imageUrl;
     const imageName = req.file?.originalname || req.body.imageName;
     const imageExtension = req.file?.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i)?.[1].toLowerCase() || req.body.imageExtension;
     try {
-        const newArticle = new Article({ title, content, author, category, imageUrl, imageName, imageExtension });
+        const newArticle = new Article({ 
+            title, 
+            content, 
+            author, 
+            category, 
+            imageUrl, 
+            imageName, 
+            imageExtension,
+            published: published === 'true' || published === true || false
+        });
         const saved = await newArticle.save();
-        return res.status(201).json({success : true, message : "Article créé avec succès", data : saved});
+        const message = saved.published ? "Article publié avec succès" : "Article enregistré en brouillon";
+        return res.status(201).json({success : true, message, data : saved});
     } catch (err) {
         if(err.name === 'ValidationError') {
             return res.status(400).json({
@@ -60,6 +70,15 @@ export const getArticleById = async (req, res) => {
         if (!article) {
             return res.status(404).json({ message: 'Article non trouvé' });
         }
+        
+        // Vérifier que seul l'auteur peut voir les brouillons
+        if (!article.published) {
+            const userId = req.user?.id;
+            if (!userId || article.author._id.toString() !== userId) {
+                return res.status(403).json({ message: 'Accès refusé. Cet article n\'est pas publié.' });
+            }
+        }
+        
         await article.incrementViews();
         return res.status(200).json(article);
     } catch (err) {
@@ -69,8 +88,13 @@ export const getArticleById = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
     try {
-        const { search, category, page = 1, limit = 10, sort = 'recent' } = req.query;
+        const { search, category, page = 1, limit = 10, sort = 'recent', showDrafts } = req.query;
         const query = {};
+
+        // Par défaut, n'afficher que les articles publiés (sauf si showDrafts=true)
+        if (showDrafts !== 'true') {
+            query.published = true;
+        }
 
         // Recherche par titre ou contenu
         if (search) {
@@ -128,6 +152,10 @@ export const updateArticle = async (req, res) => {
         if (extMatch) {
             updates.imageExtension = extMatch[1].toLowerCase();
         }
+    }
+    // Gérer le statut published
+    if (updates.published !== undefined) {
+        updates.published = updates.published === 'true' || updates.published === true;
     }
     // éviter le changement d'auteur via update
     if (updates.author) delete updates.author;

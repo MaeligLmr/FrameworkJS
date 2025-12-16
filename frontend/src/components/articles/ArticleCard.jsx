@@ -13,8 +13,17 @@ export const ArticleCard = ({ article }) => {
   };
 
   return (
-    <div className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+    <div className={`border rounded-lg p-4 hover:shadow-lg transition-shadow ${!article.published ? 'bg-gray-50 border-gray-300' : ''}`}>
       <Link to={`/articles/${article._id}`}>
+        {!article.published && (
+          <div className="mb-2">
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-600 text-white">
+              <i className="fas fa-file-alt mr-1"></i>
+              Brouillon
+            </span>
+          </div>
+        )}
+        
         {article.imageUrl && (
           <img 
             src={article.imageUrl} 

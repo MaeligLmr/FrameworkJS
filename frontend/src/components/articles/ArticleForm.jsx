@@ -15,13 +15,13 @@ const CATEGORIES = [
 /**
  * Uncontrolled ArticleForm
  * Props:
- * - initialValues: { title, category, excerpt, content }
- * - onSubmit: async function(payload) => void
+ * - initialValues: { title, category, excerpt, content, published }
+ * - onSubmit: async function(payload, isDraft) => void
  * - loading: boolean
  * - errors: array|string
  */
 const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [] }) => {
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, isDraft = false) => {
     e.preventDefault();
     const form = e.target;
     const file = form.image?.files?.[0];
@@ -30,6 +30,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
       category: form.category.value,
       content: form.content.value,
       image: file || undefined,
+      published: !isDraft
     };
     if (typeof onSubmit === 'function') await onSubmit(payload);
   };
@@ -68,8 +69,26 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
         <Input type="file" name="image" accept="image/*" label="Image" fileName={initialValues.imageName} />
       </div>
 
-      <div>
-        {loading ? <Loader /> : <Button type="submit" className="w-full bg-green-600 text-white py-2 rounded-lg">{initialValues.title ? 'Mettre à jour' : 'Publier'}</Button>}
+      <div className="flex gap-2">
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <Button 
+              type="button" 
+              onClick={(e) => handleSubmit(e, true)} 
+              className="flex-1 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700"
+            >
+              Enregistrer en brouillon
+            </Button>
+            <Button 
+              type="submit" 
+              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+            >
+              {initialValues.title ? 'Mettre à jour' : 'Publier'}
+            </Button>
+          </>
+        )}
       </div>
     </form>
   );
