@@ -7,7 +7,7 @@ const CATEGORIES = [
   { value: 'Technologie', label: 'Technologie' },
   { value: 'Santé', label: 'Santé' },
   { value: 'Science', label: 'Science' },
-  { value: 'Affaires', label: 'Affaires' },
+  { value: 'Éducation', label: 'Éducation' },
   { value: 'Divertissement', label: 'Divertissement' },
   { value: 'Sports', label: 'Sports' }
 ];

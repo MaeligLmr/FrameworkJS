@@ -18,7 +18,7 @@ export const MyArticles = () => {
       setError(null);
       try {
         const res = await articleService.fetchArticles();
-        let list = Array.isArray(res) ? res : res?.data || res?.data?.data || [];
+        let list = res?.articles;
         // filter by author id (accept _id or id)
         const myId = user?.id || user?._id;
         if (myId) {

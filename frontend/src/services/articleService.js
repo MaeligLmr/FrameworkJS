@@ -1,7 +1,17 @@
 import api from './api';
 
-export async function fetchArticles(){
-  return api.request('/articles');
+export async function fetchArticles(params = {}){
+  const { search, category, page, limit, sort } = params;
+  const queryParams = new URLSearchParams();
+  
+  if (search) queryParams.append('search', search);
+  if (category) queryParams.append('category', category);
+  if (page) queryParams.append('page', page);
+  if (limit) queryParams.append('limit', limit);
+  if (sort) queryParams.append('sort', sort);
+  
+  const queryString = queryParams.toString();
+  return api.request(`/articles${queryString ? `?${queryString}` : ''}`);
 }
 
 export async function fetchArticle(id){

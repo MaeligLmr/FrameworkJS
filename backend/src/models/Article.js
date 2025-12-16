@@ -27,7 +27,7 @@ const articleSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: ["Technologie", "Santé", "Finance", "Éducation", "Divertissement"],
+            enum: ["Technologie", "Science", "Santé", "Finance", "Éducation", "Divertissement"],
             required: [true, "La catégorie est obligatoire"],
         },
         imageUrl: {

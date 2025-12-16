@@ -56,7 +56,7 @@ export const getViewsByAuthor = async (req, res) => {
 export const getArticleById = async (req, res) => {
     const { id } = req.params;
     try {
-        const article = await Article.findById(id);
+        const article = await Article.findById(id).populate('author', 'username');
         if (!article) {
             return res.status(404).json({ message: 'Article non trouvé' });
         }
@@ -69,8 +69,50 @@ export const getArticleById = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
     try {
-        const articles = await Article.find().sort({ createdAt: -1 });
-        return res.status(200).json(articles);
+        const { search, category, page = 1, limit = 10, sort = 'recent' } = req.query;
+        const query = {};
+
+        // Recherche par titre ou contenu
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Filtre par catégorie
+        if (category && category !== 'all') {
+            query.category = category;
+        }
+
+        // Déterminer l'ordre de tri
+        let sortObj = { createdAt: -1 }; // défaut : récent
+        if (sort === 'oldest') {
+            sortObj = { createdAt: 1 };
+        } else if (sort === 'views') {
+            sortObj = { views: -1 };
+        } else if (sort === 'popular') {
+            sortObj = { views: -1, createdAt: -1 };
+        }
+
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const total = await Article.countDocuments(query);
+        const articles = await Article.find(query)
+            .populate('author', 'username')
+            .sort(sortObj)
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        return res.status(200).json({
+            articles,
+            pagination: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                totalPages: Math.ceil(total / parseInt(limit)),
+                hasMore: skip + articles.length < total
+            }
+        });
     } catch (err) {
         return res.status(400).json({ error: err.message });
     }
