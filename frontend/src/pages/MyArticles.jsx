@@ -3,6 +3,7 @@ import articleService from '../services/articleService';
 import useAuth from '../hooks/useAuth';
 import { ArticleCard } from '../components/articles/ArticleCard';
 import ArticleList from '../components/articles/ArticleList';
+import { Link } from 'react-router-dom';
 
 export const MyArticles = () => {
   const { user } = useAuth();
@@ -48,6 +49,9 @@ export const MyArticles = () => {
       ) : (
         <ArticleList articles={articles} />
       )}
+      <Link to="/create" className="md:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+        <i className="fas fa-plus"></i>
+      </Link>
     </main>
   );
 }

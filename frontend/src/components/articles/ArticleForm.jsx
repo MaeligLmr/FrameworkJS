@@ -45,32 +45,31 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-1">Titre</label>
-        <Input name="title" defaultValue={initialValues.title || ''} required />
+        <Input name="title" defaultValue={initialValues.title || ''} label="Titre" required />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Catégorie</label>
+        <label className="block text-sm font-medium mb-1">Catégorie <span className="text-red-500">*</span></label>
         <Select
           name="category"
           options={CATEGORIES}
-          defaultValue={initialValues.category || CATEGORIES[0]}
+          defaultValue={CATEGORIES.find(cat => cat.value === initialValues.category) || null}
           required
+          className='rounded-lg'
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Contenu</label>
-        <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded px-3 py-2 h-48" />
+        <label className="block text-sm font-medium mb-1">Contenu <span className="text-red-500">*</span></label>
+        <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded-lg px-3 py-2 h-48 border-gray-300" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Image</label>
-        <input type="file" name="image" accept="image/*" className="w-full" />
+        <Input type="file" name="image" accept="image/*" label="Image" fileName={initialValues.imageName} />
       </div>
 
       <div>
-        {loading ? <Loader /> : <Button type="submit" className="w-full bg-green-600 text-white py-2 rounded">{initialValues.title ? 'Mettre à jour' : 'Publier'}</Button>}
+        {loading ? <Loader /> : <Button type="submit" className="w-full bg-green-600 text-white py-2 rounded-lg">{initialValues.title ? 'Mettre à jour' : 'Publier'}</Button>}
       </div>
     </form>
   );

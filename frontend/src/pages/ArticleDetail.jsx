@@ -139,15 +139,15 @@ export const ArticleDetail = () => {
         </div>
         {isAuthor && (
           <div className="flex gap-2">
-            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded">Modifier</Button>
-            <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded disabled:opacity-50">
+            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg">Modifier</Button>
+            <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg disabled:opacity-50">
               {deleting ? 'Suppression...' : 'Supprimer'}
             </Button>
           </div>
         )}
       </div>
       <div>
-        {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} className="w-full max-h-96 object-cover rounded mt-4" />}
+        {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} className="w-full max-h-96 object-cover rounded-lgmt-4" />}
       </div>
       <div className="prose prose-lg mt-6">
         {article.content}
@@ -159,12 +159,12 @@ export const ArticleDetail = () => {
         {user ? (
           <div className="mb-6">
             {!showCommentForm && (
-              <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-blue-600 text-white rounded">
+              <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
                 Ajouter un commentaire
               </Button>
             )}
             {showCommentForm && (
-              <div className="p-4 border border-gray-200 rounded mb-4">
+              <div className="p-4 border border-gray-200 rounded-lgmb-4">
                 <CommentForm onSubmit={handleCommentSubmit} onCancel={() => setShowCommentForm(false)} />
               </div>
             )}

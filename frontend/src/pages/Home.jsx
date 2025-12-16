@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import articleService from '../services/articleService';
 import ArticleList from '../components/articles/ArticleList';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export const Home = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { user } = useAuth();
+  console.log('Current User in Home:', user);
   useEffect(() => {
     let mounted = true;
     const fetchArticles = async () => {
@@ -45,7 +48,7 @@ export const Home = () => {
 
     fetchArticles();
     return () => { mounted = false; };
-  }, []);
+  }, [user]);
 
   if (loading) return <div className="p-6">Chargement des articles…</div>;
   if (error) return <div className="p-6 text-red-600">Erreur: {error}</div>;
@@ -58,6 +61,12 @@ export const Home = () => {
       ) : (
         <ArticleList articles={articles} />
       )}
+      {user && (
+        <Link to="/create" className="md:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+          <i className="fas fa-plus"></i>
+        </Link>
+      )}
+      
     </main>
   );
 }

@@ -19,7 +19,7 @@ const CommentForm = ({ initialValue = '', onSubmit, loading = false, error = nul
   };
 
   return (
-    <div className="mt-4 p-4 border border-gray-200 rounded bg-gray-50">
+    <div className="mt-4 p-4 border border-gray-200 rounded-lgbg-gray-50">
       {error && (
         <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">
           {Array.isArray(error) ? error[0] : error}
@@ -31,11 +31,11 @@ const CommentForm = ({ initialValue = '', onSubmit, loading = false, error = nul
           defaultValue={initialValue}
           required
           placeholder="Ajouter un commentaire..."
-          className="w-full border rounded px-3 py-2 h-24"
+          className="w-full border rounded-lgpx-3 py-2 h-24"
         />
         <div className="flex justify-end gap-2">
-          {onCancel && <Button type="button" onClick={onCancel} className="px-3 py-1 bg-gray-400 text-white rounded">Annuler</Button>}
-          {loading ? <Loader /> : <Button type="submit" className="px-3 py-1 bg-blue-600 text-white rounded">Envoyer</Button>}
+          {onCancel && <Button type="button" onClick={onCancel} className="px-3 py-1 bg-gray-400 text-white rounded-lg">Annuler</Button>}
+          {loading ? <Loader /> : <Button type="submit" className="px-3 py-1 bg-blue-600 text-white rounded-lg">Envoyer</Button>}
         </div>
       </form>
     </div>

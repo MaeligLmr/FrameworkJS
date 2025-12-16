@@ -103,7 +103,7 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
 
     if(isEditing && isAuthor) {
         return (
-            <li className="p-4 border border-gray-200 rounded">
+            <li className="p-4 border border-gray-200 rounded-lg">
                 <p className="text-gray-600">par <strong>{localComment.author?.username}</strong></p>
                 {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
                 <CommentForm initialValue={localComment.text || localComment.content || ''} onSubmit={handleUpdate} loading={updating} onCancel={() => setIsEditing(false)} />
@@ -112,7 +112,7 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
     }
 
     return (
-        <li key={comment.id} className="p-4 border border-gray-200 rounded">
+        <li key={comment.id} className="p-4 border border-gray-200  rounded-lg mb-4">
             {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
             <p className="text-gray-600">par <strong>{localComment.author?.username}</strong> le {new Date(localComment.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>

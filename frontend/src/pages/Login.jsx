@@ -23,7 +23,6 @@ export const Login = () => {
       navigate('/');
     } catch (err) {
       setErrors(err?.errors);
-      console.log('Login error:', err);
     } finally {
       setLoading(false);
     }

@@ -39,7 +39,7 @@ export const LoginForm = ({ onSubmit, loading = false }) => {
                 {loading ? (
                     <Loader />
                 ) : (
-                    <Button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
+                    <Button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg">
                         Se connecter
                     </Button>
                 )}

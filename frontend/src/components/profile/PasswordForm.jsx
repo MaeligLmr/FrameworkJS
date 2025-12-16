@@ -54,13 +54,13 @@ export const PasswordForm = ({ onSubmit, loading = false }) => {
             <h3 className="text-lg font-semibold mb-4">Changer mon mot de passe</h3>
 
             {error && (
-                <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded">
+                <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded-lg">
                     {error}
                 </div>
             )}
 
             {success && (
-                <div className="p-3 bg-green-100 border border-green-600 text-green-700 rounded">
+                <div className="p-3 bg-green-100 border border-green-600 text-green-700 rounded-lg">
                     Mot de passe changé avec succès!
                 </div>
             )}
