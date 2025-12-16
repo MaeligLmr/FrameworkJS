@@ -8,16 +8,24 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
         firstname: user?.firstname || '',
         lastname: user?.lastname || '',
         username: user?.username || '',
-        email: user?.email || ''
+        email: user?.email || '',
+        avatar: null
     });
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        const { name, value, type, files } = e.target;
+        if (type === 'file') {
+            setFormData(prev => ({
+                ...prev,
+                [name]: files?.[0] || null
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -31,14 +39,21 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-6 rounded-lg w-full">
-            <h3 className="text-lg font-semibold mb-4">Modifier mon profil</h3>
-            
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-lg w-full">            
             {error && (
-                <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded">
+                <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded-lg">
                     {error}
                 </div>
             )}
+
+            <Input
+                type="file"
+                name="avatar"
+                label="Photo de profil"
+                accept="image/*"
+                fileName={user?.avatarImageName}
+                onChange={handleChange}
+            />
 
             <Input
                 type="text"
@@ -51,7 +66,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
             />
             <Input
                 type="text"
-                name="name"
+                name="lastname"
                 label="Nom"
                 placeholder="Nom"
                 value={formData.lastname}
@@ -80,7 +95,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
             />
 
             <div className="flex gap-2">
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading} className="w-full py-2 px-3 bg-blue-600 rounded-lg text-white">
                     {loading ? <Loader /> : 'Enregistrer les modifications'}
                 </Button>
             </div>

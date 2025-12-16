@@ -1,50 +1,89 @@
+import axios from 'axios';
+
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-// Redirects to login if the backend reports an expired token
-const handleTokenExpired = (status) => {
-  const isExpired = status === 401;
-  if (!isExpired) return;
-  
-  // Don't redirect if already on login/register pages
-  if (typeof window !== 'undefined' && (window.location.pathname === '/login' || window.location.pathname === '/register')) {
-    return;
-  }
-  
-  try {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  } catch {
-    // ignore storage errors
-  }
-  if (typeof window !== 'undefined') {
-    window.location.assign('/login');
-  }
-};
+// Create axios instance
+const axiosInstance = axios.create({
+  baseURL: API_BASE,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-export async function request(path, options = {}){
-  const url = `${API_BASE}${path}`;
-  
-  const token = localStorage.getItem('token');
-  const headers = { ...options.headers };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  
-  const res = await fetch(url, { ...options, headers });
-  const contentType = res.headers.get('content-type') || '';
-  if (contentType.includes('application/json')) {
-    const json = await res.json();
-    if (!res.ok) {
-      handleTokenExpired(res.status);
-      throw json;
+// Request interceptor to add token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return json;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  if (!res.ok) {
-    handleTokenExpired(res.status);
-    throw new Error('Network error');
+);
+
+// Response interceptor to handle token expiration
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Don't redirect if already on login/register pages
+      if (typeof window !== 'undefined' && 
+          (window.location.pathname === '/login' || window.location.pathname === '/register')) {
+        return Promise.reject(error.response?.data || error);
+      }
+      
+      try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      } catch {
+        // ignore storage errors
+      }
+      
+      if (typeof window !== 'undefined') {
+        window.location.assign('/login');
+      }
+    }
+    return Promise.reject(error.response?.data || error);
   }
-  return res.text();
+);
+
+// Wrapper function to maintain compatibility with existing code
+export async function request(path, options = {}) {
+  const { method = 'GET', headers, body, ...restOptions } = options;
+  
+  const config = {
+    url: path,
+    method,
+    headers,
+    ...restOptions,
+  };
+
+  // Handle body/data
+  if (body) {
+    if (body instanceof FormData) {
+      config.data = body;
+      // Remove Content-Type header to let axios set it with boundary
+      if (config.headers) {
+        delete config.headers['Content-Type'];
+      }
+    } else if (typeof body === 'string') {
+      try {
+        config.data = JSON.parse(body);
+      } catch {
+        config.data = body;
+      }
+    } else {
+      config.data = body;
+    }
+  }
+
+  const response = await axiosInstance(config);
+  return response.data;
 }
 
-export default { request, API_BASE };
+export default { request, API_BASE, axiosInstance };

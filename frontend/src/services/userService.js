@@ -5,6 +5,21 @@ export async function getUserProfile() {
 }
 
 export async function updateUserProfile(payload) {
+    // If payload contains an avatar file, use FormData
+    if (payload.avatar instanceof File) {
+        const formData = new FormData();
+        Object.keys(payload).forEach(key => {
+            if (payload[key] !== undefined && payload[key] !== null) {
+                formData.append(key, payload[key]);
+            }
+        });
+        return api.request('/users/profile', { 
+            method: 'PUT',
+            body: formData
+        });
+    }
+    
+    // Otherwise, send JSON
     return api.request('/users/profile', { 
         method: 'PUT', 
         headers: { 'Content-Type': 'application/json' }, 
