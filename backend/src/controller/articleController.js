@@ -70,15 +70,14 @@ export const getArticleById = async (req, res, next) => {
     try {
         const article = await Article.findById(id);
         if (!article) {
-            return next(new AppError('Article non trouvé', 404, ['Article non trouvé']));
+            return res.status(404).json({ message: 'Article non trouvé' });
         }
         
         // Vérifier que seul l'auteur peut voir les brouillons
         if (!article.published) {
             const userId = req.user?._id;
             if (!userId || article.author._id.toString() !== userId.toString()) {
-               
-                return next(new AppError('Accès refusé. Cet article est un brouillon.', 403, ['Accès refusé']));
+                return res.status(403).json({ message: "Accès refusé. Cet article n'est pas publié." });
             }
         }
         
