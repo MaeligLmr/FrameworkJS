@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 export const ArticleCard = ({ article }) => {
   const getCategoryColor = (category) => {
     const colors = {
-      'Technologie': 'bg-blue-100 text-blue-800',
-      'Santé': 'bg-green-100 text-green-800',
-      'Finance': 'bg-yellow-100 text-yellow-800',
-      'Éducation': 'bg-purple-100 text-purple-800',
-      'Divertissement': 'bg-pink-100 text-pink-800'
+      'Cinéma & Séries': 'bg-red-100 text-red-800',
+      'Musique': 'bg-purple-100 text-purple-800',
+      'Jeux vidéo': 'bg-green-100 text-green-800',
+      'Comics, Manga & Animation': 'bg-pink-100 text-pink-800',
+      'Culture Internet & Tendances': 'bg-blue-100 text-blue-800'
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };

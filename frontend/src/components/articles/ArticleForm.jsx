@@ -4,12 +4,11 @@ import Loader from '../common/Loader';
 import Select from 'react-select';
 
 const CATEGORIES = [
-  { value: 'Technologie', label: 'Technologie' },
-  { value: 'Santé', label: 'Santé' },
-  { value: 'Science', label: 'Science' },
-  { value: 'Éducation', label: 'Éducation' },
-  { value: 'Divertissement', label: 'Divertissement' },
-  { value: 'Sports', label: 'Sports' }
+  { value: 'Cinéma & Séries', label: 'Cinéma & Séries' },
+  { value: 'Musique', label: 'Musique' },
+  { value: 'Jeux vidéo', label: 'Jeux vidéo' },
+  { value: 'Comics, Manga & Animation', label: 'Comics, Manga & Animation' },
+  { value: 'Culture Internet & Tendances', label: 'Culture Internet & Tendances' }
 ];
 
 /**

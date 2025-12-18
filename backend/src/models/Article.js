@@ -27,7 +27,13 @@ const articleSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: ["Technologie", "Science", "Santé", "Finance", "Éducation", "Divertissement"],
+            enum: [
+                "Cinéma & Séries",
+                "Musique",
+                "Jeux vidéo",
+                "Comics, Manga & Animation",
+                "Culture Internet & Tendances"
+            ],
             required: [true, "La catégorie est obligatoire"],
         },
         imageUrl: {

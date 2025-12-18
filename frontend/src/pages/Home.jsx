@@ -10,12 +10,11 @@ import Button from '../components/common/Button';
 
 const CATEGORIES = [
   { value: 'all', label: 'Toutes' },
-  { value: 'Technologie', label: 'Technologie' },
-  { value: 'Santé', label: 'Santé' },
-  { value: 'Science', label: 'Science' },
-  { value: 'Finance', label: 'Finance' },
-  { value: 'Éducation', label: 'Éducation' },
-  { value: 'Divertissement', label: 'Divertissement' }
+  { value: 'Cinéma & Séries', label: 'Cinéma & Séries' },
+  { value: 'Musique', label: 'Musique' },
+  { value: 'Jeux vidéo', label: 'Jeux vidéo' },
+  { value: 'Comics, Manga & Animation', label: 'Comics, Manga & Animation' },
+  { value: 'Culture Internet & Tendances', label: 'Culture Internet & Tendances' }
 ];
 
 export const Home = () => {
