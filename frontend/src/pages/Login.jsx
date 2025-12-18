@@ -19,7 +19,7 @@ export const Login = () => {
       setLoading(true);
       await authService.login({ email, password });
       await login(email, password);
-      
+
       navigate('/');
     } catch (err) {
       setErrors(err?.errors);
@@ -29,19 +29,22 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen p-6">
-      <h1 className="text-2xl font-semibold mb-4">Se connecter</h1>
-      {errors.length > 0 &&
-        errors.map((err, index) => (
-          <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
-        ))}
+    <div className='relative'>
+      <Link to="/" className="text-[#4062BB] hover:text-[#2F4889] absolute left-4 top-4"><i className="fas fa-arrow-left"></i>Retour à l'accueil</Link>
+      <div className="min-h-screen p-6 max-w-xl mx-auto flex flex-col justify-center gap-4">
+        <h1 className="text-2xl font-semibold">Se connecter</h1>
+        {errors.length > 0 &&
+          errors.map((err, index) => (
+            <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
+          ))}
 
-      <LoginForm onSubmit={handleSubmit} />
-      {loading && <div className="mt-3">Connexion en cours…</div>}
-      <p className="mt-4">Pas encore de compte ? <Link to="/signup" className="text-blue-600 hover:text-blue-800">Inscrivez-vous</Link></p>
-      <p className="mt-2"><Link to="/forgot-password" className="text-blue-600 hover:text-blue-800">Mot de passe oublié ?</Link></p>
-      <Link to="/" className="text-blue-600 hover:text-blue-800">Retour à l'accueil</Link>
+        <LoginForm onSubmit={handleSubmit} />
+        {loading && <div className="mt-3">Connexion en cours…</div>}
+        <p className="text-center">Pas encore de compte ? <Link to="/signup" className="text-[#4062BB] hover:text-[#2F4889]">Inscrivez-vous</Link></p>
+        <p className="text-center"><Link to="/forgot-password" className="text-[#4062BB] hover:text-[#2F4889]">Mot de passe oublié ?</Link></p>
+      </div>
     </div>
+
   );
 }
 

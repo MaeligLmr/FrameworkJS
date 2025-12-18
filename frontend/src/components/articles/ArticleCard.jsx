@@ -5,9 +5,8 @@ export const ArticleCard = ({ article }) => {
     const colors = {
       'Cinéma & Séries': 'bg-red-100 text-red-800',
       'Musique': 'bg-purple-100 text-purple-800',
-      'Jeux vidéo': 'bg-green-100 text-green-800',
-      'Comics, Manga & Animation': 'bg-pink-100 text-pink-800',
-      'Culture Internet & Tendances': 'bg-blue-100 text-blue-800'
+      'Comics, Manga': 'bg-pink-100 text-pink-800',
+      'Internet': 'bg-blue-100 text-[#2F4889]'
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
@@ -42,7 +41,7 @@ export const ArticleCard = ({ article }) => {
           </span>
         </div>
 
-        <h2 className="text-xl font-semibold mb-2 hover:text-blue-600 transition-colors">
+        <h2 className="text-xl font-semibold mb-2 hover:text-[#4062BB] transition-colors">
           {article.title}
         </h2>
         

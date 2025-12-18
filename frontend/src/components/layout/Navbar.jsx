@@ -11,7 +11,7 @@ export const Navbar = () => {
         {authToken || user ? (
           <>
             <div className='flex gap-4'>
-            <Link to="/create" className='hidden md:block rounded-lg text-white bg-blue-600 px-4 py-2 hover:bg-blue-700'>+ Nouvel Article</Link>
+            <Link to="/create" className='hidden md:block rounded-lg text-white bg-[#4062BB] px-4 py-2 hover:bg-[#2F4889]'>+ Nouvel Article</Link>
             <Link to={`/profile/${user._id}`} className='flex justify-end items-center gap-2'>
             <span className="hidden md:block">{user.username}</span><Avatar dimensions={8} user={user}/>
             </Link>

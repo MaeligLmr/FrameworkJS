@@ -30,9 +30,8 @@ const articleSchema = new mongoose.Schema(
             enum: [
                 "Cinéma & Séries",
                 "Musique",
-                "Jeux vidéo",
-                "Comics, Manga & Animation",
-                "Culture Internet & Tendances"
+                "Comics",
+                "Internet"
             ],
             required: [true, "La catégorie est obligatoire"],
         },

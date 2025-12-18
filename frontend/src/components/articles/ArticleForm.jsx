@@ -6,9 +6,8 @@ import Select from 'react-select';
 const CATEGORIES = [
   { value: 'Cinéma & Séries', label: 'Cinéma & Séries' },
   { value: 'Musique', label: 'Musique' },
-  { value: 'Jeux vidéo', label: 'Jeux vidéo' },
-  { value: 'Comics, Manga & Animation', label: 'Comics, Manga & Animation' },
-  { value: 'Culture Internet & Tendances', label: 'Culture Internet & Tendances' }
+  { value: 'Comics, Manga', label: 'Comics, Manga' },
+  { value: 'Internet', label: 'Internet' }
 ];
 
 /**
@@ -24,7 +23,6 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
     e.preventDefault();
     const form = e.target;
     const file = form.image?.files?.[0];
-    console.log(form)
     const payload = {
       title: form.title.value,
       category: form.category.value,
@@ -98,7 +96,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
             </Button>
             <Button 
               type="submit" 
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+              className="flex-1 bg-[#F5BC5B] py-2 rounded-lg hover:bg-[#F2A218]"
             >
               {initialValues.title ? 'Mettre à jour' : 'Publier'}
             </Button>

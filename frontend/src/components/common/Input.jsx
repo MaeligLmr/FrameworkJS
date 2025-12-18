@@ -64,7 +64,7 @@ const Input = ({
                     />
                     <label htmlFor={inputId} className="flex items-center justify-between cursor-pointer">
                         <div className="flex items-center gap-3 min-w-0">
-                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-[#4062BB]">
                                 <i className="fa fa-upload"></i>
                                 {fileLabel ? (
                                     <span className="sr-only">{fileLabel}</span>
@@ -72,7 +72,7 @@ const Input = ({
                             </div>
                             <span className="truncate text-sm text-gray-600">{fileLabel}</span>
                         </div>
-                        <span className="ml-4 inline-flex items-center px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">Parcourir</span>
+                        <span className="ml-4 inline-flex items-center px-3 py-1.5 text-sm font-medium bg-[#4062BB] text-white rounded-md shadow hover:bg-[#2F4889]">Parcourir</span>
                     </label>
                 </div>
                 {placeholder && (

@@ -71,7 +71,7 @@ const RegisterForm = ({ onSubmit, loading = false }) => {
 				{loading ? (
 					<Loader />
 				) : (
-					<Button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg">Créer un compte</Button>
+					<Button type="submit" className="w-full bg-[#4062BB] text-white py-2 rounded-lg">Créer un compte</Button>
 				)}
 			</div>
 		</form>

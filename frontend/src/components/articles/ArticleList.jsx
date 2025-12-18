@@ -1,14 +1,17 @@
 import { ArticleCard } from "./ArticleCard";
+import Masonry from "react-masonry-css";
 
 const ArticleList = ({ articles }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {articles.map((article) => (
-        <div key={article._id || article.id}>
-          <ArticleCard article={article} />
-        </div>
-      ))}
-    </div>
+    <Masonry
+  breakpointCols={{ default: 3, 768: 2, 640: 1 }}
+  className="flex gap-4"
+  columnClassName="flex flex-col gap-4"
+>
+  {articles.map(article => (
+    <ArticleCard key={article._id} article={article} />
+  ))}
+</Masonry>
   );
 };
 

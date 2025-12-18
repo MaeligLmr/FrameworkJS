@@ -120,7 +120,7 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
             <p className="text-gray-800">{localComment.text || localComment.content}</p>
             {isAuthor && (
                 <div className="flex justify-end gap-2">
-                    <Button onClick={() => setIsEditing(true)} disabled={isDeleting} className="text-blue-600 hover:text-blue-800"><i className="fas fa-edit"></i> Modifier</Button>
+                    <Button onClick={() => setIsEditing(true)} disabled={isDeleting} className="text-[#4062BB] hover:text-[#2F4889]"><i className="fas fa-edit"></i> Modifier</Button>
                     <Button onClick={() => setShowConfirm(true)} disabled={isDeleting} className="text-red-600 hover:text-red-800"><i className="fas fa-trash"></i> Supprimer</Button>
                 </div>
             )}

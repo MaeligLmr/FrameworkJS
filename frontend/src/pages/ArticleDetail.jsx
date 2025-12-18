@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import articleService from '../services/articleService';
 import commentService from '../services/commentService';
 import Loader from '../components/common/Loader';
@@ -14,6 +14,7 @@ import Avatar from '../components/profile/avatar';
 export const ArticleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -27,8 +28,20 @@ export const ArticleDetail = () => {
   const [loadingComments, setLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState([]);
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
 
-  const isAuthor = article && user && (article.author?._id === user._id);
+  const handleBack = () => {
+    const cameFromCreate = location.state?.from === '/create';
+    if (cameFromCreate && window.history.length > 2) {
+      navigate(-2);
+    } else if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
+  const isAuthor = article && user && (article.author?._id === user._id)
   useEffect(() => {
     let mounted = true;
     const fetchOne = async () => {
@@ -121,7 +134,7 @@ export const ArticleDetail = () => {
   if (editing && isAuthor) {
     return (
       <main className="p-6 max-w-3xl mx-auto">
-        <Link to="#" onClick={() => setEditing(false)} className="text-sm text-blue-600">← Annuler</Link>
+        <Link to="#" onClick={() => setEditing(false)} className="text-sm text-[#4062BB]">← Annuler</Link>
         <h1 className="text-2xl font-semibold mt-4 mb-4">Modifier l'article</h1>
         <ArticleForm initialValues={article} onSubmit={handleUpdate} loading={updating} errors={editErrors} />
       </main>
@@ -130,7 +143,7 @@ export const ArticleDetail = () => {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <Button onClick={() => navigate(-1)} className="text-sm text-blue-600">← Retour</Button>
+      <Button onClick={handleBack} className="text-sm text-[#4062BB]">← Retour</Button>
       <div className="flex justify-between items-start mt-4">
         <div>
           <h1 className="text-3xl font-bold">{article.title || 'Sans titre'}</h1>
@@ -140,7 +153,7 @@ export const ArticleDetail = () => {
         </div>
         {isAuthor && (
           <div className="flex flex-col gap-2">
-            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg">Modifier</Button>
+            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-[#4062BB] text-white text-sm rounded-lg">Modifier</Button>
             <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg disabled:opacity-50">
               {deleting ? 'Suppression...' : 'Supprimer'}
             </Button>
@@ -148,7 +161,7 @@ export const ArticleDetail = () => {
         )}
       </div>
       <div>
-        {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} className="w-full max-h-96 object-cover rounded-lgmt-4" />}
+        {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} onClick={() => setShowImageModal(true)} className="w-full max-h-96 object-cover rounded-lg mt-4 cursor-pointer hover:opacity-90 transition-opacity" />}
       </div>
       <div className="prose prose-lg mt-6">
         {article.content}
@@ -161,7 +174,7 @@ export const ArticleDetail = () => {
           user ? (
             <div className="mb-6">
               {!showCommentForm && (
-                <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-[#4062BB] text-white rounded-lg">
                   Ajouter un commentaire
                 </Button>
               )}
@@ -172,7 +185,7 @@ export const ArticleDetail = () => {
               )}
             </div>
           ) : (
-            <p className="text-gray-600 mb-4"><Link to="/login" className="text-blue-600">Connectez-vous</Link> pour ajouter un commentaire</p>
+            <p className="text-gray-600 mb-4"><Link to="/login" className="text-[#4062BB]">Connectez-vous</Link> pour ajouter un commentaire</p>
           )
         ) : (
           <p className="text-gray-600 mb-4 italic">Les commentaires sont désactivés pour les articles non publiés.</p>
@@ -194,6 +207,17 @@ export const ArticleDetail = () => {
           )
         )}
       </section>
+      
+      {showImageModal && article.imageUrl && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowImageModal(false)}>
+          <div className="max-w-4xl max-h-screen flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+            <img src={article.imageUrl} alt={article.title || 'Article image'} className="max-w-full max-h-screen object-contain" />
+            <button onClick={() => setShowImageModal(false)} className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center hover:bg-gray-200/30 rounded-full transition-colors">
+              <i className="fas fa-times text-white"></i>
+            </button>
+          </div>
+        </div>
+      )}
       
       {showConfirm && (
       <PopupConfirm

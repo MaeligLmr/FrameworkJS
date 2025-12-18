@@ -35,7 +35,7 @@ const CommentForm = ({ initialValue = '', onSubmit, loading = false, error = nul
         />
         <div className="flex justify-end gap-2">
           {onCancel && <Button type="button" onClick={onCancel} className="px-3 py-1 bg-gray-400 text-white rounded-lg">Annuler</Button>}
-          {loading ? <Loader /> : <Button type="submit" className="px-3 py-1 bg-blue-600 text-white rounded-lg">Envoyer</Button>}
+          {loading ? <Loader /> : <Button type="submit" className="px-3 py-1 bg-[#4062BB] text-white rounded-lg">Envoyer</Button>}
         </div>
       </form>
     </div>

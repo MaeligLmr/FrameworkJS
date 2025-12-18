@@ -63,14 +63,14 @@ export const ResetPassword = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="w-full bg-[#4062BB] text-white py-2 rounded-lg hover:bg-[#2F4889] disabled:opacity-50"
           disabled={loading}
         >
           {loading ? 'Réinitialisation...' : 'Réinitialiser'}
         </button>
       </form>
       <p className="mt-4 text-sm">
-        <Link to="/login" className="text-blue-600">Retour connexion</Link>
+        <Link to="/login" className="text-[#4062BB]">Retour connexion</Link>
       </p>
     </div>
   );

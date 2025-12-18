@@ -12,9 +12,8 @@ const CATEGORIES = [
   { value: 'all', label: 'Toutes' },
   { value: 'Cinéma & Séries', label: 'Cinéma & Séries' },
   { value: 'Musique', label: 'Musique' },
-  { value: 'Jeux vidéo', label: 'Jeux vidéo' },
-  { value: 'Comics, Manga & Animation', label: 'Comics, Manga & Animation' },
-  { value: 'Culture Internet & Tendances', label: 'Culture Internet & Tendances' }
+  { value: 'Comics, Manga', label: 'Comics, Manga' },
+  { value: 'Internet', label: 'Internet' }
 ];
 
 export const Home = () => {
@@ -31,7 +30,7 @@ export const Home = () => {
 
   const fetchArticles = useCallback(async (pageNum, reset = false) => {
     if (loading) return;
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -100,69 +99,81 @@ export const Home = () => {
   }, [page]);
 
   return (
-    <main className="p-6 min-h-screen max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-6">Articles récents</h1>
-        
-        {/* Barre de recherche et filtres */}
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="flex-1">
-            <Input
-              type="text"
-              name="search"
-              label="Rechercher"
-              placeholder="Rechercher un article..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              icon={<i className="fas fa-search"></i>}
-            />
-          </div>
-          
-          {/* Boutons de catégorie scrollables */}
-          <div className="w-full">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
-            <div className="flex gap-2 w-full overflow-x-auto pb-2 scroll-smooth scrollbar-thin scrollbar-thumb-gray-300">
-              {CATEGORIES.map((cat) => (
-                <Button
-                  key={cat.value}
-                  onClick={() => setCategory(cat.value)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                    category === cat.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  {cat.label}
-                </Button>
-              ))}
-            </div>
-          </div>
+    <main className="p-6 min-h-screen">
+      <section className="mb-8 bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm">
+        <h1 className="text-3xl font-bold mb-3">Bienvenue sur Zentra.</h1>
+        <p className="text-gray-700 mb-3">
+          Zentra est un espace dédié à la pop culture, là où le cinéma, les séries, la musique, le jeu vidéo et les tendances numériques se croisent.
+        </p>
+        <p className="text-gray-700 mb-3">
+          Nous explorons ce qui façonne la culture d’aujourd’hui, entre œuvres cultes, nouveautés et phénomènes qui font vibrer Internet.
+        </p>
+        <p className="text-gray-700">
+          Zentra, c’est un regard curieux et accessible sur la pop culture contemporaine, pensé comme un point de rencontre pour découvrir, analyser et partager.
+        </p>
+      </section>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tri</label>
-            <Select
-              options={[
-                { value: 'recent', label: 'Plus récents' },
-                { value: 'oldest', label: 'Plus anciens' },
-                { value: 'popular', label: 'Populaires' }
-              ]}
-              value={
-                sort === 'recent' ? { value: 'recent', label: 'Plus récents' } :
-                sort === 'oldest' ? { value: 'oldest', label: 'Plus anciens' } :
-                sort === 'popular' ? { value: 'popular', label: 'Populaires' } :
-                { value: 'popular', label: 'Populaires' }
-              }
-              onChange={(selected) => setSort(selected.value)}
-              className="w-full md:w-64"
-              styles={{
-                control: (base) => ({
-                  ...base,
-                  minHeight: '40px'
-                })
-              }}
-            />
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold mb-6">Articles récents</h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+          {/* Barre de recherche et filtres */}
+            <div className="w-full">
+              <Input
+                type="text"
+                name="search"
+                label="Rechercher"
+                placeholder="Rechercher un article..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                icon={<i className="fas fa-search"></i>}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tri</label>
+              <Select
+                options={[
+                  { value: 'recent', label: 'Plus récents' },
+                  { value: 'oldest', label: 'Plus anciens' },
+                  { value: 'popular', label: 'Populaires' }
+                ]}
+                value={
+                  sort === 'recent' ? { value: 'recent', label: 'Plus récents' } :
+                    sort === 'oldest' ? { value: 'oldest', label: 'Plus anciens' } :
+                      sort === 'popular' ? { value: 'popular', label: 'Populaires' } :
+                        { value: 'popular', label: 'Populaires' }
+                }
+                onChange={(selected) => setSort(selected.value)}
+                className="w-full md:w-48 rounded-2xl" 
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    minHeight: '40px',
+                    borderRadius:'0.5rem'
+                  })
+                }}
+              />
+            </div>
+        </div>
+        {/* Boutons de catégorie scrollables */}
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+          <div className="flex gap-2 w-full overflow-x-auto pb-2 scroll-smooth scrollbar-thin scrollbar-thumb-gray-300">
+            {CATEGORIES.map((cat) => (
+              <Button
+                key={cat.value}
+                onClick={() => setCategory(cat.value)}
+                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${category === cat.value
+                  ? 'bg-[#4062BB] text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+              >
+                {cat.label}
+              </Button>
+            ))}
           </div>
         </div>
+
+
       </div>
 
       {error && (
@@ -179,7 +190,7 @@ export const Home = () => {
       ) : (
         <>
           <ArticleList articles={articles} />
-          
+
           {/* Infinite scroll trigger */}
           <div ref={observerTarget} className="py-4 text-center">
             {loading && <Loader />}
@@ -189,9 +200,9 @@ export const Home = () => {
           </div>
         </>
       )}
-      
+
       {user && (
-        <Link to="/create" className="md:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 px-4.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50">
+        <Link to="/create" className="md:hidden fixed bottom-6 right-6 bg-[#4062BB] text-white p-4 px-4.5 rounded-full shadow-lg hover:bg-[#2F4889] transition-colors z-50">
           <i className="fas fa-plus"></i>
         </Link>
       )}

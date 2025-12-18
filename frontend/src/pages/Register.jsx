@@ -41,7 +41,7 @@ export const Register = () => {
         ))}
       <RegisterForm onSubmit={handleSubmit} />
       {loading && <div className="mt-3">Création du compte…</div>}
-      <p>Déjà un compte ? <Link to="/login" className="text-blue-600 hover:text-blue-800">Connectez-vous</Link></p>
+      <p>Déjà un compte ? <Link to="/login" className="text-[#4062BB] hover:text-[#2F4889]">Connectez-vous</Link></p>
     </div>
   );
 }

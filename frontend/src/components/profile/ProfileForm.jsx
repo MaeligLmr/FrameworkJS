@@ -104,7 +104,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
             />
 
             <div className="flex gap-2">
-                <Button type="submit" disabled={loading} className="w-full py-2 px-3 bg-blue-600 rounded-lg text-white">
+                <Button type="submit" disabled={loading} className="w-full py-2 px-3 bg-[#4062BB] rounded-lg text-white">
                     {loading ? <Loader /> : 'Enregistrer les modifications'}
                 </Button>
             </div>
