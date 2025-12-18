@@ -1,10 +1,14 @@
-import { useAuth } from "../../context/AuthContext";
 
-const Avatar = ({ dimensions }) => {
-    const { user } = useAuth();
+
+const Avatar = ({ dimensions, user }) => {
+    const size = `${dimensions * 4}px`; // Convert Tailwind units (1 = 4px)
+    
     if (!user.avatar) {
         return (
-            <div className={`rounded-full w-${dimensions} overflow-hidden  h-${dimensions} flex items-center justify-center bg-gray-200`}>
+            <div 
+                className="rounded-full overflow-hidden flex items-center justify-center bg-gray-200"
+                style={{ width: size, height: size }}
+            >
                 <svg
                     width="120"
                     height="120"
@@ -17,14 +21,15 @@ const Avatar = ({ dimensions }) => {
                         fill="#9CA3AF"
                     />
                 </svg>
-
             </div>
-
         )
     } else {
         return (
-            <div className={`rounded-full overflow-hidden w-${dimensions} h-${dimensions}`}>
-                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+            <div 
+                className="rounded-full overflow-hidden"
+                style={{ width: size, height: size }}
+            >
+                <img src={user.avatar} alt="Avatar" className="object-cover w-full h-full" />
             </div>
         );
     }

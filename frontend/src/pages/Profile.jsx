@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/common/Button";
 import { useAuth } from "../context/AuthContext";
 import userService from "../services/userService";
@@ -10,8 +10,10 @@ import PasswordForm from "../components/profile/PasswordForm";
 import commentService from "../services/commentService";
 import PopupForm from "../components/common/PopupForm";
 import Avatar from "../components/profile/avatar";
+import ArticleList from "../components/articles/ArticleList";
 
 export const Profile = () => {
+    const { id } = useParams();
     const { user, setUser, logout } = useAuth();
     const navigate = useNavigate();
     const [userProfile, setUserProfile] = useState(user);
@@ -22,30 +24,57 @@ export const Profile = () => {
     const [stats, setStats] = useState({ articles: 0, comments: 0 });
     const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
     const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [articles, setArticles] = useState([]);
+    const [loadingArticles, setLoadingArticles] = useState(false);
+    const [articleFilter, setArticleFilter] = useState('all');
 
     useEffect(() => {
-        if (!user) {
-            navigate('/login');
-            return;
-        }
-
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Fetch profile
-                const profileRes = await userService.getUserProfile();
-                const profile = profileRes?.data || user;
+                // Determine if viewing own profile or another user's
+                const viewingOwn = !id || id === user?._id;
+                if (!user && viewingOwn) {
+                    navigate('/login');
+                    return;
+                }
+
+                // Fetch profile accordingly
+                const profileRes = viewingOwn 
+                  ? await userService.getUserProfile()
+                  : await userService.getUserById(id);
+                const profile = profileRes?.data || (viewingOwn ? user : null);
                 setUserProfile(profile);
 
                 // Fetch all articles to count user's articles
-                const countviews = await articleService.getViewsByAuthor(user._id);
-                const countArticles = await articleService.getCountArticlesByAuthor(user._id);
-                const countComments = await commentService.getCountCommentsByAuthor(user._id);
+                const targetId = (viewingOwn ? user?._id : id);
+                const countviews = await articleService.getViewsByAuthor(targetId);
+                const countArticles = await articleService.getCountArticlesByAuthor(targetId);
+                const countComments = await commentService.getCountCommentsByAuthor(targetId);
+
+                // Fetch articles for viewing own profile
+                if (viewingOwn) {
+                    setLoadingArticles(true);
+                    try {
+                        const articlesRes = await articleService.fetchMyArticles();
+                        const articlesList = articlesRes?.articles || [];
+                        setArticles(articlesList);
+                    } catch (err) {
+                        console.error('Error loading articles:', err);
+                    } finally {
+                        setLoadingArticles(false);
+                    }
+                }
                 setStats({
                     views: countviews.count,
                     articles: countArticles.count,
                     comments: countComments.count
                 });
+                if(user._id !== profile._id){
+                    const data = await articleService.fetchArticles({ author: userProfile._id });
+                    setArticles(data.articles);
+                }
             } catch (err) {
                 console.error('Erreur lors du chargement:', err);
                 setError('Erreur lors du chargement du profil');
@@ -55,7 +84,7 @@ export const Profile = () => {
         };
 
         fetchData();
-    }, [user, navigate]);
+    }, [user, navigate, id, userProfile?._id]);
 
     const handleLogout = () => {
         logout();
@@ -103,19 +132,46 @@ export const Profile = () => {
         );
     }
 
+    const isOwnProfile = !id || id === user?._id;
+    const filteredArticles = articleFilter === 'all' 
+        ? articles 
+        : articleFilter === 'published' 
+        ? articles.filter(a => a.published)
+        : articles.filter(a => !a.published);
+
     return (
-        <main className="min-h-screen max-w-3xl mx-auto bg-white p-3">
+        <main className="min-h-screen max-w-3xl mx-auto bg-white p-3 relative">
             <div className="max-w-4xl mx-auto">
+                {/* Header with Back and Settings */}
+                <div className="flex justify-between items-center mb-4">
+                    <Button
+                        onClick={() => navigate(-1)}
+                        className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+                    >
+                        <i className="fas fa-arrow-left"></i> Retour
+                    </Button>
+                    {isOwnProfile && (
+                        <Button
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+                        >
+                            <i className="fas fa-ellipsis-vertical"></i>
+                        </Button>
+                    )}
+                </div>
+
                 {/* Profile Header */}
                 <section className="mb-8 pb-8 border-b border-gray-200">
                     <div className="flex items-center gap-2 mb-4">
-                        <Avatar dimensions={24} />
+                        <Avatar dimensions={18} user={userProfile}/>
                         <div>
                             <h1 className="text-3xl font-bold mb-2">{userProfile?.username}</h1>
                             <h2 className="text-xl text-gray-700 mb-1">{userProfile?.firstname} {userProfile?.lastname}</h2>
                         </div>
                     </div>
 
+                    {isOwnProfile && (
+                        <>
                     <p className="text-gray-600 mb-4">{userProfile?.email}</p>
                     <p className="text-sm text-gray-500">
                         Inscrit le {new Date(userProfile?.createdAt).toLocaleDateString('fr-FR', {
@@ -123,23 +179,22 @@ export const Profile = () => {
                             month: 'long',
                             day: 'numeric'
                         })}
-                    </p>
+                    </p></>)}
                 </section>
 
                 {/* Statistics */}
                 <section className="mb-8 border-b border-gray-200 pb-8">
-                    <h2 className="text-2xl font-semibold mb-4">Statistiques</h2>
                     <div className="flex gap-4">
-                        <div className="bg-pink-50 p-3 rounded-lg border border-pink-200 w-1/3">
-                            <div className="text-xl font-bold text-pink-600">{stats.views}</div>
+                        <div className=" p-3 rounded-lg flex flex-col items-center w-1/3">
+                            <div className="text-xl font-bold ">{stats.views}</div>
                             <p className="text-gray-600">Vue{stats.views > 1 ? 's' : ''}</p>
                         </div>
-                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 w-1/3">
-                            <div className="text-xl font-bold text-blue-600">{stats.articles}</div>
+                        <div className=" p-3 rounded-lg flex flex-col items-center w-1/3">
+                            <div className="text-xl font-bold ">{stats.articles}</div>
                             <p className="text-gray-600">Article{stats.articles > 1 ? 's' : ''}</p>
                         </div>
-                        <div className="bg-green-50 p-3 rounded-lg border border-green-200 w-1/3">
-                            <div className="text-xl font-bold text-green-600">{stats.comments}</div>
+                        <div className="p-3 rounded-lg flex flex-col items-center w-1/3">
+                            <div className="text-xl font-bold ">{stats.comments}</div>
                             <p className="text-gray-600">Commentaire{stats.comments > 1 ? 's' : ''}</p>
                         </div>
                     </div>
@@ -152,21 +207,118 @@ export const Profile = () => {
                     </div>
                 )}
 
-                {/* Action Buttons */}
-                <section className="space-y-4 mb-8">
-                    <h2 className="text-2xl font-semibold mb-4">Actions</h2>
-                    <Button
-                        onClick={() => setIsProfilePopupOpen(true)}
-                        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
-                    >
-                        <i className="fas fa-user-edit mr-2"></i> Modifier mon profil
-                    </Button>
-                    <Button
-                        onClick={() => setIsPasswordPopupOpen(true)}
-                        className="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700"
-                    >
-                        <i className="fas fa-key mr-2"></i> Changer mon mot de passe
-                    </Button>
+                {/* My Articles Section (only for own profile) */}
+                {isOwnProfile && (
+                    <section className="mb-8">
+                        <h2 className="text-2xl font-semibold mb-4">Mes articles</h2>
+                        
+                        {/* Filter Buttons */}
+                        <div className="flex mb-4">
+                            <Button
+                                onClick={() => setArticleFilter('all')}
+                                className={`px-4 py-2 ${
+                                    articleFilter === 'all' 
+                                        ? 'border-b-blue-600 border-b-2' 
+                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
+                                }`}
+                            >
+                                Tous ({articles.length})
+                            </Button>
+                            <Button
+                                onClick={() => setArticleFilter('published')}
+                                className={`px-4 py-2 ${
+                                    articleFilter === 'published' 
+                                         ? 'border-b-blue-600 border-b-2' 
+                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
+                                }`}
+                            >
+                                Publiés ({articles.filter(a => a.published).length})
+                            </Button>
+                            <Button
+                                onClick={() => setArticleFilter('drafts')}
+                                className={`px-4 py-2 ${
+                                    articleFilter === 'drafts' 
+                                         ? 'border-b-blue-600 border-b-2' 
+                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
+                                }`}
+                            >
+                                Brouillons ({articles.filter(a => !a.published).length})
+                            </Button>
+                        </div>
+
+                        {/* Articles List */}
+                        {loadingArticles ? (
+                            <div className="flex justify-center py-8">
+                                <Loader />
+                            </div>
+                        ) : (
+                            <ArticleList articles={filteredArticles} />
+                        )}
+                    </section>
+                )}
+
+                {/* Other User's Articles (when viewing someone else's profile) */}
+                {!isOwnProfile && (
+                    <section className="mb-8">
+                        <h2 className="text-2xl font-semibold mb-4">Articles de {userProfile?.username}</h2>
+                        <ArticleList articles={articles} />
+                    </section>
+                )}
+
+                {/* Sidebar for Settings */}
+                {isSidebarOpen && (
+                    <>
+                        {/* Overlay */}
+                        <div 
+                            className="fixed inset-0 bg-black/30 z-40"
+                            onClick={() => setIsSidebarOpen(false)}
+                        />
+                        
+                        {/* Sidebar Panel */}
+                        <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl z-50 flex flex-col">
+                            {/* Header */}
+                            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+                                <h2 className="text-xl font-semibold">Paramètres</h2>
+                                <Button
+                                    onClick={() => setIsSidebarOpen(false)}
+                                    className="text-gray-600 hover:text-gray-800"
+                                >
+                                    <i className="fas fa-times text-xl"></i>
+                                </Button>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex-1 p-4 space-y-4">
+                                <Button
+                                    onClick={() => {
+                                        setIsSidebarOpen(false);
+                                        setIsProfilePopupOpen(true);
+                                    }}
+                                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-user-edit"></i> Modifier mon profil
+                                </Button>
+                                
+                                <Button
+                                    onClick={() => {
+                                        setIsSidebarOpen(false);
+                                        setIsPasswordPopupOpen(true);
+                                    }}
+                                    className="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-key"></i> Changer mon mot de passe
+                                </Button>
+
+                                <Button
+                                    onClick={handleLogout}
+                                    className="w-full border border-red-600 rounded-lg text-red-600 hover:bg-red-100/50 py-3 flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-sign-out-alt"></i> Se déconnecter
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                )}
 
                 {/* Popups */}
                 <PopupForm
@@ -192,13 +344,6 @@ export const Profile = () => {
                     />
                 </PopupForm>
 
-                    <Button
-                        onClick={handleLogout}
-                        className="border border-red-600 rounded-lg text-red-600 hover:bg-red-100/50 w-full py-3 flex items-center justify-center gap-2"
-                    >
-                        <i className="fas fa-sign-out-alt"></i> Se déconnecter
-                    </Button>
-                </section>
             </div>
         </main>
     );

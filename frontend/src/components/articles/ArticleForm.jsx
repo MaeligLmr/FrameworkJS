@@ -20,16 +20,32 @@ const CATEGORIES = [
  * - errors: array|string
  */
 const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [] }) => {
-  const handleSubmit = async (e, isDraft = false) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
+    const file = form.image?.files?.[0];
+    console.log(form)
+    const payload = {
+      title: form.title.value,
+      category: form.category.value,
+      content: form.content.value,
+      image: file || undefined,
+      published: true
+    };
+    if (typeof onSubmit === 'function') await onSubmit(payload);
+  };
+
+  const handleSubmitDraft = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget?.form;
+    if (!form) return;
     const file = form.image?.files?.[0];
     const payload = {
       title: form.title.value,
       category: form.category.value,
       content: form.content.value,
       image: file || undefined,
-      published: !isDraft
+      published: false
     };
     if (typeof onSubmit === 'function') await onSubmit(payload);
   };
@@ -75,7 +91,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
           <>
             <Button 
               type="button" 
-              onClick={(e) => handleSubmit(e, true)} 
+              onClick={handleSubmitDraft} 
               className="flex-1 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700"
             >
               Enregistrer en brouillon

@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom'
 import {Home} from './pages/Home'
 import {ArticleDetail} from './pages/ArticleDetail'
 import {CreateArticle} from './pages/CreateArticle'
-import {MyArticles} from './pages/MyArticles'
 import {Login} from './pages/Login'
 import {Register} from './pages/Register'
 import {Profile} from './pages/Profile'
@@ -32,12 +31,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
         <Route path="/create" element={<RequireAuth><CreateArticle /></RequireAuth>} />
-        <Route path="/my-articles" element={<RequireAuth><MyArticles /></RequireAuth>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+        <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
       </Routes>
       <Footer />
     </div>

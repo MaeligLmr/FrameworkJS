@@ -23,6 +23,19 @@ export const getUserProfile = async (req, res, next) => {
     }
 };
 
+export const getUserById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id).select('-password');
+        if (!user) {
+            return next(new AppError('Utilisateur non trouvé', 404, ['Utilisateur non trouvé']));
+        }
+        return res.status(200).json({ success: true, data: user });
+    } catch (err) {
+        next(AppError.from(err));
+    }
+};
+
 export const updateUserProfile = async (req, res, next) => {
     try {
         const userId = req.user?._id;

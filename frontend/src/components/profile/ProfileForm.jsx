@@ -32,7 +32,16 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
         e.preventDefault();
         setError(null);
         try {
-            await onSubmit(formData);
+            // Build FormData from form inputs to properly handle file upload
+            const form = e.target;
+            const submitData = {
+                firstname: form.firstname.value,
+                lastname: form.lastname.value,
+                username: form.username.value,
+                email: form.email.value,
+                avatar: form.avatar?.files?.[0] || null
+            };
+            await onSubmit(submitData);
         } catch (err) {
             setError(err?.message || 'Erreur lors de la mise à jour');
         }

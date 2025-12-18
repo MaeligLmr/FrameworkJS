@@ -103,7 +103,7 @@ commentSchema.pre(/^find/, function (next) {
         },
         {
             path: 'author',
-            select: '_id username email'
+            select: '_id username email avatar avatarPublicId avatarImageName'
         }
     ]);
     next();

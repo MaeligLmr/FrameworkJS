@@ -21,7 +21,30 @@ export const createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
   return token;
 }
 
-
+export const partialProtect = async (req, res, next) => {
+  try {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+    if (token) {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const currentUser = await User.findById(decoded.id);
+      if (currentUser) {
+        req.user = { _id: currentUser._id };
+      }
+    }
+    next();
+  } catch (err) {
+    if (err?.name === 'TokenExpiredError') {
+      return next(new AppError('TokenExpiredError', 401));
+    }
+    if (err?.name === 'JsonWebTokenError') {
+      return next(new AppError('Token invalide', 401));
+    } 
+    next(err);
+  }
+};
 
 export const protect = async (req, res, next) => {
   try {

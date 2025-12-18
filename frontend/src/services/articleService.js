@@ -1,10 +1,11 @@
 import api from './api';
 
 export async function fetchArticles(params = {}){
-  const { search, category, page, limit, sort, showDrafts } = params;
+  const { search, author, category, page, limit, sort, showDrafts } = params;
   const queryParams = new URLSearchParams();
   
   if (search) queryParams.append('search', search);
+  if (author) queryParams.append('author', author);
   if (category) queryParams.append('category', category);
   if (page) queryParams.append('page', page);
   if (limit) queryParams.append('limit', limit);
@@ -20,7 +21,11 @@ export async function fetchArticle(id){
 }
 
 export async function fetchMyArticles(){
-  return api.request(`/articles/author/`);
+  const queryParams = new URLSearchParams();
+  queryParams.append('author', 'me');
+  queryParams.append('showDrafts', 'true');
+  const body = queryParams.toString();
+  return api.request(`/articles?${body}`);
 }
 
 export async function createArticle(payload){

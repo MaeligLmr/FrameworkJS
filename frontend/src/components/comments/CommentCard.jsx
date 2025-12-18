@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import commentService from "../../services/commentService";
 import CommentForm from "./CommentForm";
 import PopupConfirm from "../common/PopupConfirm";
 import Button from "../common/Button";
 import CommentList from "./CommentList";
+import Avatar from "../profile/avatar";
 
 const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = false }) => {
     const { id: articleId } = useParams();
@@ -114,8 +115,8 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
     return (
         <li key={comment.id} className="p-4 border border-gray-200  rounded-lg mb-4">
             {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
-            <p className="text-gray-600">par <strong>{localComment.author?.username}</strong> le {new Date(localComment.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-            </p>
+            <div className="text-gray-600 flex gap-2">par <Link to={`/profile/${localComment.author?._id}`} className="flex gap-2"><Avatar dimensions={6} user={localComment.author}></Avatar>{localComment.author?.username}</Link> le {new Date(localComment.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </div>
             <p className="text-gray-800">{localComment.text || localComment.content}</p>
             {isAuthor && (
                 <div className="flex justify-end gap-2">

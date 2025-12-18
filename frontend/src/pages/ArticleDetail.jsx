@@ -9,6 +9,7 @@ import PopupConfirm from '../components/common/PopupConfirm';
 import CommentForm from '../components/comments/CommentForm';
 import CommentList from '../components/comments/CommentList';
 import Button from '../components/common/Button';
+import Avatar from '../components/profile/avatar';
 
 export const ArticleDetail = () => {
   const { id } = useParams();
@@ -129,16 +130,16 @@ export const ArticleDetail = () => {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <Link to="/" className="text-sm text-blue-600">← Retour</Link>
+      <Button onClick={() => navigate(-1)} className="text-sm text-blue-600">← Retour</Button>
       <div className="flex justify-between items-start mt-4">
         <div>
           <h1 className="text-3xl font-bold">{article.title || 'Sans titre'}</h1>
-          <div className="text-sm text-gray-600 mt-2">
-            par <strong>{article.author?.username}</strong> le {new Date(article.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+          <div className="text-sm text-gray-600 mt-2 flex gap-2 items-center">
+            par <Link to={`/profile/${article.author?._id}`} className='flex gap-2 items-center'><Avatar user={article.author} dimensions={8}></Avatar>{article.author?.username}</Link> le {new Date(article.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </div>
         </div>
         {isAuthor && (
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg">Modifier</Button>
             <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg disabled:opacity-50">
               {deleting ? 'Suppression...' : 'Supprimer'}

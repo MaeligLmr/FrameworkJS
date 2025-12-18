@@ -1,4 +1,5 @@
 import Article from '../models/Article.js';
+import { AppError } from '../utils/AppError.js';
 
 /**
  * Crée un nouvel article à partir des données fournies dans req.body et renvoie la réponse JSON.
@@ -6,7 +7,7 @@ import Article from '../models/Article.js';
  * @param {import('express').Response} res Réponse HTTP
  * @returns {Promise<import('express').Response>} Réponse JSON avec l'article créé (201) ou une erreur (4xx/5xx)
  */
-export const createArticle = async (req, res) => {
+export const createArticle = async (req, res, next) => {
     const { title, content, category, published } = req.body;
     const imageUrl = req.file?.path || req.body.imageUrl;
     const imageName = req.file?.originalname || req.body.imageName;
@@ -21,7 +22,7 @@ export const createArticle = async (req, res) => {
             imageUrl, 
             imageName, 
             imageExtension,
-            published: published === 'true' || published === true || false
+            published
         });
         const saved = await newArticle.save();
         const message = saved.published ? "Article publié avec succès" : "Article enregistré en brouillon";
@@ -64,19 +65,20 @@ export const getViewsByAuthor = async (req, res) => {
     }
 }
 
-export const getArticleById = async (req, res) => {
+export const getArticleById = async (req, res, next) => {
     const { id } = req.params;
     try {
         const article = await Article.findById(id);
         if (!article) {
-            return res.status(404).json({ message: 'Article non trouvé' });
+            return next(new AppError('Article non trouvé', 404, ['Article non trouvé']));
         }
         
         // Vérifier que seul l'auteur peut voir les brouillons
         if (!article.published) {
-            const userId = req.user?.id;
-            if (!userId || article.author._id.toString() !== userId) {
-                return res.status(403).json({ message: 'Accès refusé. Cet article n\'est pas publié.' });
+            const userId = req.user?._id;
+            if (!userId || article.author._id.toString() !== userId.toString()) {
+               
+                return next(new AppError('Accès refusé. Cet article est un brouillon.', 403, ['Accès refusé']));
             }
         }
         
@@ -87,11 +89,16 @@ export const getArticleById = async (req, res) => {
     }
 }
 
-export const getAllArticles = async (req, res) => {
+export const getAllArticles = async (req, res, next) => {
     try {
-        const { search, category, page = 1, limit = 10, sort = 'recent', showDrafts } = req.query;
+        let { search, author, category, page = 1, limit = 10, sort = 'recent', showDrafts } = req.query;
         const query = {};
-        const requesterId = req.user?.id;
+        const requesterId = req.user?._id;
+        if(author === 'me' && requesterId){
+            author = requesterId;
+        } else if(author === 'me' && !requesterId){
+            return next(new AppError('Authentification requise pour voir vos articles', 401, ['Authentification requise']));
+        }
 
         // Par défaut, n'afficher que les articles publiés.
         // Si showDrafts=true, on restreint aux brouillons de l'auteur authentifié uniquement.
@@ -100,7 +107,6 @@ export const getAllArticles = async (req, res) => {
                 return res.status(403).json({ message: 'Accès refusé. Authentification requise pour voir vos brouillons.' });
             }
             query.author = requesterId;
-            query.published = false;
         } else {
             query.published = true;
         }
@@ -111,6 +117,10 @@ export const getAllArticles = async (req, res) => {
                 { title: { $regex: search, $options: 'i' } },
                 { content: { $regex: search, $options: 'i' } }
             ];
+        }
+
+        if (author) {
+            query.author = author;
         }
 
         // Filtre par catégorie
@@ -131,7 +141,6 @@ export const getAllArticles = async (req, res) => {
         const skip = (parseInt(page) - 1) * parseInt(limit);
         const total = await Article.countDocuments(query);
         const articles = await Article.find(query)
-            .populate('author', 'username')
             .sort(sortObj)
             .skip(skip)
             .limit(parseInt(limit));
@@ -151,17 +160,6 @@ export const getAllArticles = async (req, res) => {
     }
 }
 
-export const getArticlesByAuthor = async (req, res) => {
-    const authorId = req.user?._id;
-    try {
-        const articles = await Article.find({ author: authorId })
-            .sort({ createdAt: -1 });
-        return res.status(200).json(articles);
-    } catch (err) {
-        return res.status(400).json({ error: err.message });
-    }
-}
-
 export const updateArticle = async (req, res) => {
     const { id } = req.params;
     const updates = { ...req.body };
@@ -172,10 +170,6 @@ export const updateArticle = async (req, res) => {
         if (extMatch) {
             updates.imageExtension = extMatch[1].toLowerCase();
         }
-    }
-    // Gérer le statut published
-    if (updates.published !== undefined) {
-        updates.published = updates.published === true;
     }
     // éviter le changement d'auteur via update
     if (updates.author) delete updates.author;

@@ -5,9 +5,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 // Create axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Don't set default Content-Type - let each request decide
 });
 
 // Request interceptor to add token
@@ -55,7 +53,6 @@ export async function request(path, options = {}) {
   const config = {
     url: path,
     method,
-    headers,
     ...restOptions,
   };
 
@@ -63,19 +60,21 @@ export async function request(path, options = {}) {
   if (body) {
     if (body instanceof FormData) {
       config.data = body;
-      // Remove Content-Type header to let axios set it with boundary
-      if (config.headers) {
-        delete config.headers['Content-Type'];
-      }
+      // Don't set any Content-Type - let browser/axios handle it for FormData
+      config.headers = { ...headers };
     } else if (typeof body === 'string') {
       try {
         config.data = JSON.parse(body);
       } catch {
         config.data = body;
       }
+      config.headers = { 'Content-Type': 'application/json', ...headers };
     } else {
       config.data = body;
+      config.headers = { 'Content-Type': 'application/json', ...headers };
     }
+  } else {
+    config.headers = headers;
   }
 
   const response = await axiosInstance(config);

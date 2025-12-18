@@ -121,7 +121,7 @@ export const Home = () => {
           {/* Boutons de catégorie scrollables */}
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
-            <div className="flex gap-2 w-[calc(100vw-3rem)] overflow-x-auto pb-2 scroll-smooth">
+            <div className="flex gap-2 w-full overflow-x-auto pb-2 scroll-smooth scrollbar-thin scrollbar-thumb-gray-300">
               {CATEGORIES.map((cat) => (
                 <Button
                   key={cat.value}

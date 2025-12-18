@@ -1,20 +1,19 @@
 import express from 'express';
-import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle, publishArticle, unpublishArticle, getCountArticlesByAuthor, getViewsByAuthor, getArticlesByAuthor } from '../controller/articleController.js';
+import { createArticle, getArticleById, getAllArticles, updateArticle, deleteArticle, publishArticle, unpublishArticle, getCountArticlesByAuthor, getViewsByAuthor } from '../controller/articleController.js';
 import { uploadImage } from '../config/cloudinary.js';
-import { protect } from '../middleware/auth.js';
+import { partialProtect, protect } from '../middleware/auth.js';
 import {router as commentRoutes} from './comment.js';
 
 const router = express.Router();
 
-router.get('/', getAllArticles);
+router.get('/', partialProtect, getAllArticles);
 
-router.get('/author', protect, getArticlesByAuthor);
 router.get('/author/count/:authorId', protect, getCountArticlesByAuthor);
 router.get('/author/views/:authorId', protect, getViewsByAuthor);
 
 router.use('/:articleId/comments', commentRoutes);
 
-router.get('/:id', getArticleById);
+router.get('/:id', partialProtect, getArticleById);
 
 router.post('/', protect, uploadImage('image'), createArticle);
 

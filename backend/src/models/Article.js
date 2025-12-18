@@ -94,10 +94,11 @@ articleSchema.statics.findByAuthor = function (authorId) {
 }
 
 articleSchema.virtual("summary").get(function () {
-    if (this.content.length <= 100) {
-        return this.content;
+    const content = this.content || "";
+    if (content.length <= 100) {
+        return content;
     }
-    return this.content.substring(0, 100) + "...";
+    return content.substring(0, 100) + "...";
 });
 
 articleSchema.virtual("comments", {
@@ -110,7 +111,7 @@ articleSchema.virtual("comments", {
 articleSchema.pre(/^find/, function (next) {
     this.populate({
         path: "author",
-        select: "username email"
+        select: "username email avatar avatarPublicId avatarImageName"
     });
     next();
 });
