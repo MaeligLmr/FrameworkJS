@@ -87,7 +87,7 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
         setResponding(true);
         setError(null);
         try {
-            const newReply = await commentService.postComment(articleId, { content, comment: comment._id, author: user?._id });
+            const newReply = await commentService.postComment(articleId, { content, comment: comment._id });
             setIsResponding(false);
             // Update local comment with new response
             setLocalComment(prev => ({

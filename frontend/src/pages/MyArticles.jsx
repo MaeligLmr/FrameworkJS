@@ -18,8 +18,8 @@ export const MyArticles = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await articleService.fetchArticles({ showDrafts: true });
-        let list = res?.articles;
+        const res = await articleService.fetchMyArticles();
+        let list = res;
         // filter by author id (accept _id or id)
         const myId = user?.id || user?._id;
         if (myId) {

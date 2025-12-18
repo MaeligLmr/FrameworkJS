@@ -46,7 +46,7 @@ export const logout = (req, res) => {
 export const verifyToken = async (req, res, next) => {
   try {
     // req.user is already set by authenticateToken middleware
-    const userId = req.user?.id;
+    const userId = req.user?._id;
     if (!userId) {
       const appError = new AppError('Token invalide', 401, ['Token invalide ou expiré']);
       return res.status(appError.statusCode).json(appError.toJSON());

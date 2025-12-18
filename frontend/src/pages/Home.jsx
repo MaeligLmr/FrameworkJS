@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import Loader from '../components/common/Loader';
 import Select from 'react-select';
 import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 const CATEGORIES = [
   { value: 'all', label: 'Toutes' },
@@ -105,7 +106,7 @@ export const Home = () => {
         <h1 className="text-3xl font-bold mb-6">Articles récents</h1>
         
         {/* Barre de recherche et filtres */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6 md:items-end">
+        <div className="flex flex-col gap-4 mb-6">
           <div className="flex-1">
             <Input
               type="text"
@@ -118,20 +119,24 @@ export const Home = () => {
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
-            <Select
-              options={CATEGORIES}
-              value={CATEGORIES.find(cat => cat.value === category)}
-              onChange={(selected) => setCategory(selected.value)}
-              className="w-full md:w-64"
-              styles={{
-                control: (base) => ({
-                  ...base,
-                  minHeight: '40px'
-                })
-              }}
-            />
+          {/* Boutons de catégorie scrollables */}
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+            <div className="flex gap-2 w-[calc(100vw-3rem)] overflow-x-auto pb-2 scroll-smooth">
+              {CATEGORIES.map((cat) => (
+                <Button
+                  key={cat.value}
+                  onClick={() => setCategory(cat.value)}
+                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+                    category === cat.value
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {cat.label}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <div>

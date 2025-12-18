@@ -7,6 +7,24 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
   const [loading, setLoading] = useState(true);
 
+  // Synchroniser authToken avec localStorage
+  useEffect(() => {
+    if (authToken) {
+      localStorage.setItem('token', authToken);
+    } else {
+      localStorage.removeItem('token');
+    }
+  }, [authToken]);
+
+  // Synchroniser user avec localStorage
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
   // Verify token on mount
   useEffect(() => {
     const verifyToken = async () => {
@@ -18,6 +36,7 @@ export const AuthProvider = ({ children }) => {
       
       try {
         const validatedUser = await authService.checkToken();
+        console.log('Validated user:', validatedUser);
         if (validatedUser) {
           setUser(validatedUser);
           setAuthToken(token);

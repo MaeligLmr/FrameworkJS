@@ -22,6 +22,7 @@ export const createToken = (user, expiresIn = JWT_EXPIRES_IN) => {
 }
 
 
+
 export const protect = async (req, res, next) => {
   try {
     let token;
@@ -36,7 +37,7 @@ export const protect = async (req, res, next) => {
     if (!currentUser) {
       return next(new AppError('L\'utilisateur n\'existe plus', 401));
     }
-    req.user = { id: currentUser._id.toString(), role: currentUser.role };
+    req.user = { _id: currentUser._id };
     next();
   } catch (err) {
     if (err?.name === 'TokenExpiredError') {

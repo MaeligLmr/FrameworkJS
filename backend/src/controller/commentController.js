@@ -21,10 +21,10 @@ export const createComment = async (req, res, next) => {
         if (!content) {
             return next(new AppError('Le contenu est obligatoire', 400, ['Le contenu est obligatoire']));
         }
-
+        console.log('userId:', req.user?._id);  
         const comment = await Comment.create({
             content,
-            author: req.user?.id || req.body.author,
+            author: req.user?._id,
             article: articleId,
             comment: req.body.comment || null
         });

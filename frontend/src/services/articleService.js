@@ -10,13 +10,17 @@ export async function fetchArticles(params = {}){
   if (limit) queryParams.append('limit', limit);
   if (sort) queryParams.append('sort', sort);
   if (showDrafts) queryParams.append('showDrafts', showDrafts);
-  
+
   const queryString = queryParams.toString();
   return api.request(`/articles${queryString ? `?${queryString}` : ''}`);
 }
 
 export async function fetchArticle(id){
   return api.request(`/articles/${id}`);
+}
+
+export async function fetchMyArticles(){
+  return api.request(`/articles/author/`);
 }
 
 export async function createArticle(payload){
@@ -51,4 +55,4 @@ export async function getViewsByAuthor(authorId) {
   return api.request(`/articles/author/views/${authorId}`);
 }
 
-export default { fetchArticles, createArticle, fetchArticle, updateArticle, deleteArticle, getCountArticlesByAuthor, getViewsByAuthor };
+export default { fetchArticles, createArticle, fetchArticle, updateArticle, deleteArticle, getCountArticlesByAuthor, getViewsByAuthor, fetchMyArticles };

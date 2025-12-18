@@ -5,11 +5,12 @@ import express from 'express';
 const router = express.Router({ mergeParams: true });
 
 router.route('/')
-    .get(getCommentsByArticle)
-    .post(createComment);
+    .get(getCommentsByArticle);
 router.get('/approved', getApprovedComments);
 
 router.use(protect);
+
+router.post('/', createComment);
 
 router.get('/author/count/:authorId', getCountCommentsByAuthor);
 

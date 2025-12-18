@@ -4,7 +4,7 @@ import cloudinary from "../config/cloudinary.js";
 
 export const getUserProfile = async (req, res, next) => {
     try {
-        const userId = req.user?.id;
+        const userId = req.user?._id;
         if (!userId) {
             return next(new AppError('Utilisateur non authentifié', 401, ['Authentification requise']));
         }
@@ -25,7 +25,7 @@ export const getUserProfile = async (req, res, next) => {
 
 export const updateUserProfile = async (req, res, next) => {
     try {
-        const userId = req.user?.id;
+        const userId = req.user?._id;
         if (!userId) {
             return next(new AppError('Utilisateur non authentifié', 401, ['Authentification requise']));
         }
@@ -75,7 +75,7 @@ export const updateUserProfile = async (req, res, next) => {
 
 export const changePassword = async (req, res, next) => {
     try {
-        const userId = req.user?.id;
+        const userId = req.user?._id;
         if (!userId) {
             return next(new AppError('Utilisateur non authentifié', 401, ['Authentification requise']));
         }
