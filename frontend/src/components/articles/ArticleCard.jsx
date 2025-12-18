@@ -11,6 +11,7 @@ export const ArticleCard = ({ article }) => {
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
+  console.log('Article in ArticleCard:', article);
 
   return (
     <div className={`border rounded-lg p-4 hover:shadow-lg transition-shadow ${!article.published ? 'bg-gray-50 border-gray-300' : ''}`}>
@@ -47,7 +48,7 @@ export const ArticleCard = ({ article }) => {
         </h2>
         
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {article.content}
+          {article.summary}
         </p>
         
         <div className="text-sm text-gray-500">

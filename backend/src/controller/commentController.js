@@ -20,8 +20,7 @@ export const createComment = async (req, res, next) => {
         const content = req.body.content || req.body.text;
         if (!content) {
             return next(new AppError('Le contenu est obligatoire', 400, ['Le contenu est obligatoire']));
-        }
-        console.log('userId:', req.user?._id);  
+        } 
         const comment = await Comment.create({
             content,
             author: req.user?._id,

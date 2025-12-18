@@ -54,6 +54,8 @@ const articleSchema = new mongoose.Schema(
         //createdAt
         timestamps: true,
         virtuals: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
     }
 );
 

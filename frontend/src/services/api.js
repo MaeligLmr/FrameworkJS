@@ -38,7 +38,6 @@ axiosInstance.interceptors.response.use(
       }
       
       try {
-        console.log('Token expired or unauthorized, redirecting to login.');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       } catch {

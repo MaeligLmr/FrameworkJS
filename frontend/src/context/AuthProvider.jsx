@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
       
       try {
         const validatedUser = await authService.checkToken();
-        console.log('Validated user:', validatedUser);
         if (validatedUser) {
           setUser(validatedUser);
           setAuthToken(token);
