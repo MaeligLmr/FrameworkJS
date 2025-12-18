@@ -100,15 +100,15 @@ export const Home = () => {
 
   return (
     <main className="p-6 min-h-screen">
-      <section className="mb-8 bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm">
+      <section className="mb-8 rounded-xl">
         <h1 className="text-3xl font-bold mb-3">Bienvenue sur Zentra.</h1>
-        <p className="text-gray-700 mb-3">
+        <p className="text-[#2F4889] mb-3">
           Zentra est un espace dédié à la pop culture, là où le cinéma, les séries, la musique, le jeu vidéo et les tendances numériques se croisent.
         </p>
-        <p className="text-gray-700 mb-3">
+        <p className="text-[#2F4889] mb-3">
           Nous explorons ce qui façonne la culture d’aujourd’hui, entre œuvres cultes, nouveautés et phénomènes qui font vibrer Internet.
         </p>
-        <p className="text-gray-700">
+        <p className="text-[#2F4889]">
           Zentra, c’est un regard curieux et accessible sur la pop culture contemporaine, pensé comme un point de rencontre pour découvrir, analyser et partager.
         </p>
       </section>
@@ -145,10 +145,25 @@ export const Home = () => {
                 onChange={(selected) => setSort(selected.value)}
                 className="w-full md:w-48 rounded-2xl" 
                 styles={{
-                  control: (base) => ({
+                  control: (base, state) => ({
                     ...base,
                     minHeight: '40px',
-                    borderRadius:'0.5rem'
+                    borderRadius: '0.5rem',
+                    borderColor: state.isFocused ? '#4062BB' : base.borderColor,
+                    boxShadow: state.isFocused ? '0 0 0 1px #4062BB' : base.boxShadow,
+                    '&:hover': {
+                      borderColor: state.isFocused ? '#4062BB' : base.borderColor
+                    }
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected ? '#4062BB' : state.isFocused ? '#E8EFFF' : base.backgroundColor,
+                    color: state.isSelected ? 'white' : state.isFocused ? '#4062BB' : base.color,
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#4062BB' : '#E8EFFF',
+                      color: state.isSelected ? 'white' : '#4062BB'
+                    }
                   })
                 }}
               />
@@ -164,7 +179,7 @@ export const Home = () => {
                 onClick={() => setCategory(cat.value)}
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${category === cat.value
                   ? 'bg-[#4062BB] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-white text-gray-700 hover:bg-gray-300'
                   }`}
               >
                 {cat.label}

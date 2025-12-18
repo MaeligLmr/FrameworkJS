@@ -52,13 +52,13 @@ const Input = ({
                         {label} {required ? <span className="text-red-500">*</span> : ''}
                     </label>
                 )}
-                <div className={`relative border border-gray-300 rounded-lg p-3 hover:bg-gray-50 transition ${className}`}>
+                <div className={`relative border border-gray-300 bg-white rounded-lg p-3 hover:bg-gray-50 transition ${className}`}>
                     <input
                         id={inputId}
                         name={name}
                         required={required}
                         type="file"
-                        className="sr-only"
+                        className="sr-only "
                         onChange={handleFileChange}
                         {...rest}
                     />
@@ -98,7 +98,7 @@ const Input = ({
                     id={inputId}
                     name={name}
                     required={required}
-                    className={`border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full ${icon ? 'pl-10' : ''} ${className}`}
+                    className={`border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F4889] bg-white  w-full ${icon ? 'pl-10' : ''} ${className}`}
                     type={type}
                     value={value}
                     onChange={onChange}

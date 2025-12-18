@@ -69,13 +69,34 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
           options={CATEGORIES}
           defaultValue={CATEGORIES.find(cat => cat.value === initialValues.category) || null}
           required
-          className='rounded-lg'
+          styles={{
+            control: (base, state) => ({
+              ...base,
+              borderRadius: '0.5rem',
+              minHeight: '40px',
+              borderColor: state.isFocused ? '#4062BB' : base.borderColor,
+              boxShadow: state.isFocused ? '0 0 0 1px #4062BB' : base.boxShadow,
+              '&:hover': {
+                borderColor: state.isFocused ? '#4062BB' : base.borderColor
+              }
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isSelected ? '#4062BB' : state.isFocused ? '#E8EFFF' : base.backgroundColor,
+              color: state.isSelected ? 'white' : state.isFocused ? '#4062BB' : base.color,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: state.isSelected ? '#4062BB' : '#E8EFFF',
+                color: state.isSelected ? 'white' : '#4062BB'
+              }
+            })
+          }}
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">Contenu <span className="text-red-500">*</span></label>
-        <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded-lg px-3 py-2 h-48 border-gray-300" />
+        <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded-lg px-3 py-2 h-48 border-gray-300 bg-white focus:border-[#4062BB] focus:outline-none focus:ring-1 focus:ring-[#4062BB] transition-all" />
       </div>
 
       <div>

@@ -143,7 +143,7 @@ export const ArticleDetail = () => {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <Button onClick={handleBack} className="text-sm text-[#4062BB]">← Retour</Button>
+      <Button onClick={handleBack} className="text-sm text-[#4062BB]"><i className="fas fa-arrow-left"></i> Retour</Button>
       <div className="flex justify-between items-start mt-4">
         <div>
           <h1 className="text-3xl font-bold">{article.title || 'Sans titre'}</h1>

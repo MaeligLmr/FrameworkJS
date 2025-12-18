@@ -33,15 +33,18 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen p-6">
-      <h1 className="text-2xl font-semibold mb-4">S'inscrire</h1>
-      {errors.length > 0 &&
-        errors.map((err, index) => (
-          <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
-        ))}
-      <RegisterForm onSubmit={handleSubmit} />
-      {loading && <div className="mt-3">Création du compte…</div>}
-      <p>Déjà un compte ? <Link to="/login" className="text-[#4062BB] hover:text-[#2F4889]">Connectez-vous</Link></p>
+    <div className='p-4'>
+      <Link to="/" className="text-[#4062BB] hover:text-[#2F4889]"><i className="fas fa-arrow-left"></i> Retour à l'accueil</Link>
+      <div className="min-h-screen p-6 max-w-xl mx-auto flex flex-col justify-center gap-4">
+        <h1 className="text-2xl font-semibold">S'inscrire</h1>
+        {errors.length > 0 &&
+          errors.map((err, index) => (
+            <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
+          ))}
+        <RegisterForm onSubmit={handleSubmit} />
+        {loading && <div className="mt-3">Création du compte…</div>}
+        <p className="text-center">Déjà un compte ? <Link to="/login" className="text-[#4062BB] hover:text-[#2F4889]">Connectez-vous</Link></p>
+      </div>
     </div>
   );
 }

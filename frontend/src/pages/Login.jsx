@@ -29,8 +29,8 @@ export const Login = () => {
   };
 
   return (
-    <div className='relative'>
-      <Link to="/" className="text-[#4062BB] hover:text-[#2F4889] absolute left-4 top-4"><i className="fas fa-arrow-left"></i>Retour à l'accueil</Link>
+    <div className='p-4'>
+      <Link to="/" className="text-[#4062BB] hover:text-[#2F4889]"><i className="fas fa-arrow-left"></i> Retour à l'accueil</Link>
       <div className="min-h-screen p-6 max-w-xl mx-auto flex flex-col justify-center gap-4">
         <h1 className="text-2xl font-semibold">Se connecter</h1>
         {errors.length > 0 &&

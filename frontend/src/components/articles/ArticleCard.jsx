@@ -12,7 +12,7 @@ export const ArticleCard = ({ article }) => {
   };
 
   return (
-    <div className={`border rounded-lg p-4 hover:shadow-lg transition-shadow ${!article.published ? 'bg-gray-50 border-gray-300' : ''}`}>
+    <div className={`border rounded-lg p-4 border-[#2F4889] bg-white transition-shadow ${!article.published ? 'bg-gray-50' : ''}`}>
       <Link to={`/articles/${article._id}`}>
         {!article.published && (
           <div className="mb-2">
