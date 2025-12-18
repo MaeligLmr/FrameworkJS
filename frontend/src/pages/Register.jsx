@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/auth/RegisterForm';
 import { useAuth } from '../context/AuthContext';
-import authService from '../services/authService';
 
 export const Register = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -24,13 +23,10 @@ export const Register = () => {
     const lastname = e.target.lastname.value;
     try {
       setLoading(true);
-      // call signup endpoint
-      await authService.signup({ username, firstname, lastname, email, password });
-      // after signup, try login automatically
-      await login(email, password);
-      navigate('/');
+      const res = await signup({ username, firstname, lastname, email, password });
+      navigate('/', { state: { message: res?.message || 'Compte créé. Bienvenue !' } });
     } catch (err) {
-      setErrors(err?.errors);
+      setErrors(err?.errors || ['Erreur lors de la création du compte']);
     } finally {
       setLoading(false);
     }

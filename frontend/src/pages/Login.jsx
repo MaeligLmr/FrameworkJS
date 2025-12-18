@@ -38,7 +38,8 @@ export const Login = () => {
 
       <LoginForm onSubmit={handleSubmit} />
       {loading && <div className="mt-3">Connexion en cours…</div>}
-      <p>Pas encore de compte ? <Link to="/signup" className="text-blue-600 hover:text-blue-800">Inscrivez-vous</Link></p>
+      <p className="mt-4">Pas encore de compte ? <Link to="/signup" className="text-blue-600 hover:text-blue-800">Inscrivez-vous</Link></p>
+      <p className="mt-2"><Link to="/forgot-password" className="text-blue-600 hover:text-blue-800">Mot de passe oublié ?</Link></p>
       <Link to="/" className="text-blue-600 hover:text-blue-800">Retour à l'accueil</Link>
     </div>
   );

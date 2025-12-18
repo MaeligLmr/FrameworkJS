@@ -4,7 +4,7 @@ const Avatar = ({ dimensions }) => {
     const { user } = useAuth();
     if (!user.avatar) {
         return (
-            <div className={`rounded-full overflow-hidden w-${dimensions} h-${dimensions} flex items-center justify-center bg-gray-200`}>
+            <div className={`rounded-full w-${dimensions} overflow-hidden  h-${dimensions} flex items-center justify-center bg-gray-200`}>
                 <svg
                     width="120"
                     height="120"

@@ -11,7 +11,6 @@ export const ArticleCard = ({ article }) => {
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
-  console.log('Article in ArticleCard:', article);
 
   return (
     <div className={`border rounded-lg p-4 hover:shadow-lg transition-shadow ${!article.published ? 'bg-gray-50 border-gray-300' : ''}`}>

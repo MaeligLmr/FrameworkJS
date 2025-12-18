@@ -35,6 +35,26 @@ export async function signup(payload){
   return res;
 }
 
+export async function verifyEmail(token) {
+  return api.request(`/auth/verify-email/${token}`, { method: 'GET' });
+}
+
+export async function forgotPassword(email) {
+  return api.request('/auth/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+}
+
+export async function resetPassword(token, password) {
+  return api.request(`/auth/reset-password/${token}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password })
+  });
+}
+
 export async function logout(){
   return api.request('/auth/logout', {
     method: 'POST',
@@ -67,4 +87,4 @@ export async function checkToken(){
   }
 }
 
-export default { login, signup, logout, checkToken };
+export default { login, signup, logout, checkToken, verifyEmail, forgotPassword, resetPassword };

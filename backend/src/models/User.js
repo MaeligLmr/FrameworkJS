@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Le mot de passe est obligatoire'],
             minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères']
         },
+        resetPasswordToken: {
+            type: String,
+            default: null
+        },
+        resetPasswordExpires: {
+            type: Date,
+            default: null
+        },
         avatar: {
             type: String,
             default: null
