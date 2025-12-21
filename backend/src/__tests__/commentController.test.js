@@ -87,7 +87,8 @@ describe('commentController', () => {
     await getCommentsByArticle(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ success: true, count: 2, data: comments });
+    const expectedData = comments.map(c => ({ ...c, responses: [] }));
+    expect(res.json).toHaveBeenCalledWith({ success: true, count: 2, data: expectedData });
   });
 
   test('getApprovedComments renvoie seulement approuvés', async () => {

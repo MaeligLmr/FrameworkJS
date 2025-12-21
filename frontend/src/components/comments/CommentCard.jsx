@@ -108,7 +108,8 @@ const CommentCard = ({
         setResponding(true);
         setError(null);
         try {
-            const newReply = await commentService.postComment(articleId, { content, comment: comment._id });
+            const parentId = comment._id || comment.id;
+            const newReply = await commentService.postComment(articleId, { content, comment: parentId });
             setIsResponding(false);
             // Update local comment with new response
             setLocalComment(prev => ({
@@ -133,7 +134,7 @@ const CommentCard = ({
     }
 
     return (
-        <li key={comment.id} className="p-4 mb-4">
+        <li key={comment.id} className="p-4">
             {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
             <div className="flex gap-2">
                 <Link to={`/profile/${localComment.author?._id}`}><Avatar dimensions={10} user={localComment.author} showName={false}></Avatar></Link>
@@ -188,16 +189,15 @@ const CommentCard = ({
                 </div>
 
             </div>
-            {(localComment.responses && localComment.responses.length > 0) &&
+            {(level === 0 && localComment.responses && localComment.responses.length > 0) && (
                 <CommentList
                     comments={localComment.responses || []}
                     onCommentUpdated={(updatedComment) => handleNestedCommentUpdated(updatedComment, 'update')}
-                    isChild={true}
                     level={level + 1}
                     rootReplyAuthor={level >= 1 ? rootReplyAuthor : localComment.author}
                     onCommentDeleted={(deletedComment) => handleNestedCommentUpdated(deletedComment, 'delete')}
-                    />
-            }
+                />
+            )}
             {isResponding && (
                 <CommentForm
                     onSubmit={handleRespond}

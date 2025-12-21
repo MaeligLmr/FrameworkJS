@@ -58,16 +58,41 @@ export const getCommentsByArticle = async (req, res, next) => {
             return next(new AppError('Article non trouvé', 404, ['Article non trouvé']));
         }
 
-        const comments = await Comment.find({ article: articleId })
-            .sort({ createdAt: -1 });
+        // Récupère tous les commentaires (avec les populates définis dans le modèle)
+        const comments = await Comment.find({ article: articleId }).sort({ createdAt: -1 });
 
-        // Populate responses (replies) pour chaque commentaire
-        await Promise.all(comments.map(c => c.populateResponses()));
+        // Normalise en objets JS et construit l'arbre imbriqué
+        const nodes = comments.map((c) => {
+            const obj = typeof c.toObject === 'function' ? c.toObject({ virtuals: true }) : { ...c };
+            if (!Array.isArray(obj.responses)) obj.responses = [];
+            return obj;
+        });
+
+        const byId = new Map();
+        nodes.forEach((n) => {
+            const id = String(n._id || n.id);
+            byId.set(id, n);
+        });
+
+        const roots = [];
+        nodes.forEach((n) => {
+            const parentRef = n.comment;
+            const parentId = parentRef
+                ? String(typeof parentRef === 'object' ? (parentRef._id || parentRef.id) : parentRef)
+                : null;
+            if (parentId && byId.has(parentId)) {
+                const parentNode = byId.get(parentId);
+                if (!Array.isArray(parentNode.responses)) parentNode.responses = [];
+                parentNode.responses.push(n);
+            } else {
+                roots.push(n);
+            }
+        });
 
         res.status(200).json({
             success: true,
-            count: comments.length,
-            data: comments
+            count: roots.length,
+            data: roots
         });
     } catch (err) {
         next(AppError.from(err));

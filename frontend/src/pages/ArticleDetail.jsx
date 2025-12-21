@@ -83,9 +83,10 @@ export const ArticleDetail = () => {
     setCommentsError([]);
     try {
       const res = await commentService.fetchComments(id);
-      let commentList = res?.data || res || [];
-      commentList = commentList.filter(c => !c.comment); // only top-level comments
-      setComments(Array.isArray(commentList) ? commentList : []);
+      const items = res?.data || res || [];
+      // If API already returns nested `responses`, just keep top-level roots
+      const roots = Array.isArray(items) ? items.filter((c) => !c.comment) : [];
+      setComments(roots);
     } catch (err) {
       setCommentsError(err?.errors || ['Erreur lors du chargement des commentaires']);
     } finally {

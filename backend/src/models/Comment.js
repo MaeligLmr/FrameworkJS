@@ -52,7 +52,13 @@ const commentSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-        toJSON: { virtuals: true }
+        toJSON: {
+            virtuals: true,
+            transform: function (doc, ret) {
+                if (!Array.isArray(ret.responses)) ret.responses = [];
+                return ret;
+            }
+        }
     }
 );
 
