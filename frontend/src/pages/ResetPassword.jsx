@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import Input from '../components/common/Input';
+import Button from '../components/common/Button';
 
 export const ResetPassword = () => {
   const { token } = useParams();
@@ -39,35 +41,31 @@ export const ResetPassword = () => {
         <div key={i} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-2">{err}</div>
       ))}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            required
-            minLength={6}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
-          <input
-            type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            required
-            minLength={6}
-          />
-        </div>
-        <button
+        <Input
+          type="password"
+          name="password"
+          label="Nouveau mot de passe"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+        />
+        <Input
+          type="password"
+          name="confirm"
+          label="Confirmer le mot de passe"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          required
+          minLength={6}
+        />
+        <Button
           type="submit"
-          className="w-full bg-[#4062BB] text-white py-2 rounded-lg hover:bg-[#2F4889] disabled:opacity-50"
           disabled={loading}
+          full
         >
           {loading ? 'Réinitialisation...' : 'Réinitialiser'}
-        </button>
+        </Button>
       </form>
       <p className="mt-4 text-sm">
         <Link to="/login" className="text-[#4062BB]">Retour connexion</Link>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import articleService from '../services/articleService';
 import commentService from '../services/commentService';
@@ -10,6 +10,7 @@ import CommentForm from '../components/comments/CommentForm';
 import CommentList from '../components/comments/CommentList';
 import Button from '../components/common/Button';
 import Avatar from '../components/profile/avatar';
+import { getCategoryColor } from '../utils/helpers';
 
 export const ArticleDetail = () => {
   const { id } = useParams();
@@ -29,6 +30,8 @@ export const ArticleDetail = () => {
   const [commentsError, setCommentsError] = useState([]);
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
 
   const handleBack = () => {
     const cameFromCreate = location.state?.from === '/create';
@@ -42,6 +45,19 @@ export const ArticleDetail = () => {
   };
 
   const isAuthor = article && user && (article.author?._id === user._id)
+  
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showMenu]);
+
   useEffect(() => {
     let mounted = true;
     const fetchOne = async () => {
@@ -85,7 +101,7 @@ export const ArticleDetail = () => {
 
   const handleCommentSubmit = async (text) => {
     try {
-      await commentService.postComment(id,{ author: user._id, content : text });
+      await commentService.postComment(id, { author: user._id, content: text });
       setShowCommentForm(false);
       fetchComments();
     } catch (err) {
@@ -143,22 +159,55 @@ export const ArticleDetail = () => {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <Button onClick={handleBack} className="text-sm text-[#4062BB]"><i className="fas fa-arrow-left"></i> Retour</Button>
-      <div className="flex justify-between items-start mt-4">
-        <div>
-          <h1 className="text-3xl font-bold">{article.title || 'Sans titre'}</h1>
-          <div className="text-sm text-gray-600 mt-2 flex gap-2 items-center">
-            par <Link to={`/profile/${article.author?._id}`} className='flex gap-2 items-center'><Avatar user={article.author} dimensions={8}></Avatar>{article.author?.username}</Link> le {new Date(article.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+      <Button onClick={handleBack} noBorders><i className="fas fa-arrow-left"></i> Retour</Button>
+      <div className='flex flex-col gap-4'>
+        <div className="flex justify-between items-start">
+        <h1 className="text-3xl font-bold">{article.title || 'Sans titre'}</h1>{isAuthor && (
+            <div className="relative" ref={menuRef}>
+              <Button onClick={() => setShowMenu(!showMenu)} noBorders icon='ellipsis-vertical'>
+              </Button>
+              {showMenu && (
+                <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-max">
+                  <Button
+                    onClick={() => { setEditing(true); setShowMenu(false); }}
+                    disabled={deleting}
+                    icon="edit"
+                    noBorders
+                    full
+                  >
+                    Modifier
+                  </Button>
+                  <Button
+                    onClick={() => { setShowConfirm(true); setShowMenu(false); }}
+                    disabled={deleting}
+                    danger
+                    icon="trash"
+                    noBorders
+                    full
+                  >
+                    Supprimer
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
           </div>
+        <div className="text-sm text-gray-600 mt-2 flex gap-2 items-center">
+          <Link to={`/profile/${article.author?._id}`} className='flex gap-2 items-center'><Avatar user={article.author} dimensions={8}></Avatar></Link> le {new Date(article.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+          
         </div>
-        {isAuthor && (
-          <div className="flex flex-col gap-2">
-            <Button onClick={() => setEditing(true)} className="px-3 py-1 bg-[#4062BB] text-white text-sm rounded-lg">Modifier</Button>
-            <Button onClick={() => setShowConfirm(true)} disabled={deleting} className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg disabled:opacity-50">
-              {deleting ? 'Suppression...' : 'Supprimer'}
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center gap-2 mb-2">
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(article.category)}`}>
+            {article.category}
+          </span>
+          <span className="text-sm text-gray-500 flex items-center gap-1">
+            <i className="fas fa-eye"></i>
+            {article.views || 0} vues
+          </span>
+        </div>
+
+
+
       </div>
       <div>
         {article.imageUrl && <img src={article.imageUrl} alt={article.title || 'Article image'} onClick={() => setShowImageModal(true)} className="w-full max-h-96 object-cover rounded-lg mt-4 cursor-pointer hover:opacity-90 transition-opacity" />}
@@ -166,22 +215,20 @@ export const ArticleDetail = () => {
       <div className="prose prose-lg mt-6">
         {article.content}
       </div>
-      
+
       <section className="mt-8 border-t pt-6">
         <h2 className="text-2xl font-semibold mb-4">Commentaires</h2>
-        
+
         {article.published ? (
           user ? (
             <div className="mb-6">
               {!showCommentForm && (
-                <Button onClick={() => setShowCommentForm(true)} className="px-4 py-2 bg-[#4062BB] text-white rounded-lg">
+                <Button onClick={() => setShowCommentForm(true)}>
                   Ajouter un commentaire
                 </Button>
               )}
               {showCommentForm && (
-                <div className="p-4 border border-gray-200 rounded-lgmb-4">
-                  <CommentForm onSubmit={handleCommentSubmit} onCancel={() => setShowCommentForm(false)} />
-                </div>
+                <CommentForm onSubmit={handleCommentSubmit} onCancel={() => setShowCommentForm(false)} />
               )}
             </div>
           ) : (
@@ -190,13 +237,13 @@ export const ArticleDetail = () => {
         ) : (
           <p className="text-gray-600 mb-4 italic">Les commentaires sont désactivés pour les articles non publiés.</p>
         )}
-        
-        { 
-        commentsError.length > 0 &&
-        commentsError.map((err, index) => (
-          <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
-        ))}
-        
+
+        {
+          commentsError.length > 0 &&
+          commentsError.map((err, index) => (
+            <div key={index} className="p-2 border border-red-600 bg-red-100 text-red-700 mb-4">{err}</div>
+          ))}
+
         {article.published && (
           loadingComments ? (
             <Loader />
@@ -207,7 +254,7 @@ export const ArticleDetail = () => {
           )
         )}
       </section>
-      
+
       {showImageModal && article.imageUrl && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowImageModal(false)}>
           <div className="max-w-4xl max-h-screen flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
@@ -218,14 +265,14 @@ export const ArticleDetail = () => {
           </div>
         </div>
       )}
-      
+
       {showConfirm && (
-      <PopupConfirm
-        message="Êtes-vous sûr de vouloir supprimer cet article ?"
-        onConfirm={handleDelete}
-        onCancel={() => setShowConfirm(false)}
-        confirmText="Supprimer"
-      />)}
+        <PopupConfirm
+          message="Êtes-vous sûr de vouloir supprimer cet article ?"
+          onConfirm={handleDelete}
+          onCancel={() => setShowConfirm(false)}
+          confirmText="Supprimer"
+        />)}
     </main>
   );
 };

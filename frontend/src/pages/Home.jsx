@@ -177,10 +177,7 @@ export const Home = () => {
               <Button
                 key={cat.value}
                 onClick={() => setCategory(cat.value)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${category === cat.value
-                  ? 'bg-[#4062BB] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-300'
-                  }`}
+                light={category !== cat.value}
               >
                 {cat.label}
               </Button>

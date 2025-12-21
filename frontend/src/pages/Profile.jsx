@@ -146,16 +146,17 @@ export const Profile = () => {
                 <div className="flex justify-between items-center mb-4">
                     <Button
                         onClick={() => navigate(-1)}
-                        className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+                        noBorders
+                        icon='arrow-left'
                     >
-                        <i className="fas fa-arrow-left"></i> Retour
+                        Retour
                     </Button>
                     {isOwnProfile && (
                         <Button
                             onClick={() => setIsSidebarOpen(true)}
-                            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+                            noBorders
+                            icon='ellipsis-vertical'
                         >
-                            <i className="fas fa-ellipsis-vertical"></i>
                         </Button>
                     )}
                 </div>
@@ -163,10 +164,10 @@ export const Profile = () => {
                 {/* Profile Header */}
                 <section className="mb-8 pb-8 border-b border-gray-200">
                     <div className="flex items-center gap-2 mb-4">
-                        <Avatar dimensions={18} user={userProfile}/>
-                        <div>
-                            <h1 className="text-3xl font-bold mb-2">{userProfile?.username}</h1>
-                            <h2 className="text-xl text-gray-700 mb-1">{userProfile?.firstname} {userProfile?.lastname}</h2>
+                        <Avatar dimensions={18} user={userProfile} hoverDisabled showName={false} />
+                        <div className="flex flex-col">
+                            <span className="text-3xl font-bold mb-2">{userProfile?.username}</span>
+                            <span className="text-xl text-gray-700 mb-1">{userProfile?.firstname} {userProfile?.lastname}</span>
                         </div>
                     </div>
 
@@ -216,31 +217,22 @@ export const Profile = () => {
                         <div className="flex mb-4">
                             <Button
                                 onClick={() => setArticleFilter('all')}
-                                className={`px-4 py-2 ${
-                                    articleFilter === 'all' 
-                                        ? 'border-b-[#4062BB] border-b-2' 
-                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
-                                }`}
+                                tab
+                                active={articleFilter === 'all'}
                             >
                                 Tous ({articles.length})
                             </Button>
                             <Button
                                 onClick={() => setArticleFilter('published')}
-                                className={`px-4 py-2 ${
-                                    articleFilter === 'published' 
-                                         ? 'border-b-[#4062BB] border-b-2' 
-                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
-                                }`}
+                                tab
+                                active={articleFilter === 'published'}
                             >
                                 Publiés ({articles.filter(a => a.published).length})
                             </Button>
                             <Button
                                 onClick={() => setArticleFilter('drafts')}
-                                className={`px-4 py-2 ${
-                                    articleFilter === 'drafts' 
-                                         ? 'border-b-[#4062BB] border-b-2' 
-                                        : 'text-gray-700 hover:border-b-gray-300 border-b-2 border-transparent'
-                                }`}
+                                tab
+                                active={articleFilter === 'drafts'}
                             >
                                 Brouillons ({articles.filter(a => !a.published).length})
                             </Button>
@@ -281,9 +273,9 @@ export const Profile = () => {
                                 <h2 className="text-xl font-semibold">Paramètres</h2>
                                 <Button
                                     onClick={() => setIsSidebarOpen(false)}
-                                    className="text-gray-600 hover:text-gray-800"
+                                    noBorders
+                                    icon="times"
                                 >
-                                    <i className="fas fa-times text-xl"></i>
                                 </Button>
                             </div>
 
@@ -294,9 +286,11 @@ export const Profile = () => {
                                         setIsSidebarOpen(false);
                                         setIsProfilePopupOpen(true);
                                     }}
-                                    className="w-full bg-[#4062BB] text-white py-3 rounded-lg hover:bg-[#2F4889] flex items-center justify-center gap-2"
-                                >
-                                    <i className="fas fa-user-edit"></i> Modifier mon profil
+                                    light
+                                    full
+                                    icon='user-edit'
+                                    >
+                                    Modifier mon profil
                                 </Button>
                                 
                                 <Button
@@ -304,16 +298,21 @@ export const Profile = () => {
                                         setIsSidebarOpen(false);
                                         setIsPasswordPopupOpen(true);
                                     }}
-                                    className="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2"
-                                >
-                                    <i className="fas fa-key"></i> Changer mon mot de passe
+                                    light
+                                    full
+                                    icon="key"
+                                    >
+                                    Changer mon mot de passe
                                 </Button>
 
                                 <Button
                                     onClick={handleLogout}
-                                    className="w-full border border-red-600 rounded-lg text-red-600 hover:bg-red-100/50 py-3 flex items-center justify-center gap-2"
+                                    light
+                                    full
+                                    danger
+                                    icon="sign-out-alt"
                                 >
-                                    <i className="fas fa-sign-out-alt"></i> Se déconnecter
+                                    Se déconnecter
                                 </Button>
                             </div>
                         </div>

@@ -20,28 +20,25 @@ export const LoginForm = ({ onSubmit, loading = false }) => {
             </div>
             <div>
                 <label className="block text-sm font-medium mb-1">Mot de passe</label>
-                <div className="relative">
-                    <Input
-                        name="password"
-                        type={showPassword ? 'text' : 'password'}
-                        required
-                    
-                    />
-                    <Button
-                        onClick={() => setShowPassword((v) => !v)}
-                        className="absolute inset-y-0 right-3 text-sm text-gray-500"
-                    >
-                        {showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
-                    </Button>
-                </div>
+                <Input
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    button={
+                        <Button
+                            onClick={() => setShowPassword((v) => !v)}
+                            discrete
+                        >
+                            {showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
+                        </Button>
+                    }
+                />
             </div>
             <div>
                 {loading ? (
                     <Loader />
                 ) : (
-                    <Button type="submit" className="w-full bg-[#4062BB] text-white py-2 rounded-lg">
-                        Se connecter
-                    </Button>
+                    <Button type="submit" full>Se connecter</Button>
                 )}
             </div>
         </form>

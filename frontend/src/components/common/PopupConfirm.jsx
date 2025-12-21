@@ -1,12 +1,20 @@
+import Button from './Button';
+
 const PopupConfirm = ({ message, onConfirm, onCancel, confirmText }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="bg-white relative rounded-lg p-6 max-w-sm mx-auto">
-        <button onClick={onCancel} className="text-black rounded-full p-1 hover:bg-gray-50 absolute top-2 right-2 align-middle w-8 h-8"><i className="fas fa-times"></i></button>
+        <div className="absolute top-2 right-2">
+        <Button 
+        onClick={onCancel} 
+        noBorders 
+        icon='times'>
+        </Button>
+        </div>
         <p className="my-6">{message}</p>
-        <div className="flex justify-end">
-          <button onClick={onCancel} className="mr-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">Annuler</button>
-          <button onClick={onConfirm} className={"px-4 py-2 text-white rounded-lg " + (confirmText == "Supprimer" ? "bg-red-600 hover:bg-red-700" : "bg-[#4062BB] hover:bg-[#2F4889]")}>{confirmText}</button>
+        <div className="flex justify-end gap-2">
+          <Button onClick={onCancel} light>Annuler</Button>
+          <Button onClick={onConfirm} danger={confirmText === "Supprimer"}>{confirmText}</Button>
         </div>
       </div>
     </div>

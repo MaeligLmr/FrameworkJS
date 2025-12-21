@@ -33,45 +33,43 @@ const RegisterForm = ({ onSubmit, loading = false }) => {
 			</div>
 			<div>
 				<label className="block text-sm font-medium mb-1">Mot de passe <span className="text-red-600">*</span></label>
-				<div className="relative">
 					<Input
 						name="password"
 						type={showPassword ? 'text' : 'password'}
 						required
+						button={
+							<Button 
+								onClick={() => setShowPassword((v) => !v)}
+								discrete
+							>
+								{showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
+							</Button>
+						}
 						
 					/>
-					<Button
-						type="button"
-						onClick={() => setShowPassword((v) => !v)}
-						className="absolute inset-y-0 right-3 text-sm text-gray-500"
-					>
-						{showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
-					</Button>
-				</div>
 			</div>
 			<div>
 				<label className="block text-sm font-medium mb-1">Confirmer le mot de passe <span className="text-red-600">*</span></label>
-				<div className="relative">
 				<Input
 					name="confirmPassword"
 					type={showPassword ? 'text' : 'password'}
 					required
-					
+					button={
+						<Button 
+							onClick={() => setShowPassword((v) => !v) }
+							discrete
+						>
+							{showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
+						</Button>
+					}
 				/>
-				<Button
-					type="button"
-					onClick={() => setShowPassword((v) => !v)}
-					className="absolute inset-y-0 right-3 text-sm text-gray-500"
-				>
-					{showPassword ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
-				</Button>
-				</div>
+				
 			</div>
 			<div>
 				{loading ? (
 					<Loader />
 				) : (
-					<Button type="submit" className="w-full bg-[#4062BB] text-white py-2 rounded-lg">Créer un compte</Button>
+					<Button type="submit" className="w-full">Créer un compte</Button>
 				)}
 			</div>
 		</form>

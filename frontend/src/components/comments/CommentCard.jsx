@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Link, useParams } from "react-router-dom";
 import commentService from "../../services/commentService";
@@ -8,7 +8,13 @@ import Button from "../common/Button";
 import CommentList from "./CommentList";
 import Avatar from "../profile/avatar";
 
-const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = false }) => {
+const CommentCard = ({ 
+    comment, 
+    onCommentUpdated, 
+    onCommentDeleted, 
+    isChild = false, 
+    level = 0, 
+    rootReplyAuthor = null }) => {
     const { id: articleId } = useParams();
     const [showConfirm, setShowConfirm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -17,13 +23,27 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
     const [updating, setUpdating] = useState(false);
     const [responding, setResponding] = useState(false);
     const [isResponding, setIsResponding] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
     const [localComment, setLocalComment] = useState(comment);
     const { user } = useAuth();
     const isAuthor = user?._id === comment.author?._id;
+    const menuRef = useRef(null);
 
     useEffect(() => {
         setLocalComment(comment);
     }, [comment]);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setShowMenu(false);
+            }
+        };
+        if (showMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showMenu]);
 
     // Callback for nested comment updates (delete/update of child comments)
     const handleNestedCommentUpdated = (updatedComment, action) => {
@@ -102,10 +122,10 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
         }
     }
 
-    if(isEditing && isAuthor) {
+    if (isEditing && isAuthor) {
         return (
-            <li className="p-4 border border-gray-200 rounded-lg">
-                <p className="text-gray-600">par <strong>{localComment.author?.username}</strong></p>
+            <li className="p-4">
+                <p className="text-gray-600"><Link to={`/profile/${localComment.author?._id}`}>{localComment.author?.username}</Link></p>
                 {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
                 <CommentForm initialValue={localComment.text || localComment.content || ''} onSubmit={handleUpdate} loading={updating} onCancel={() => setIsEditing(false)} />
             </li>
@@ -113,21 +133,71 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
     }
 
     return (
-        <li key={comment.id} className="p-4 border border-gray-200  rounded-lg mb-4">
+        <li key={comment.id} className="p-4 mb-4">
             {error && <div className="mb-2 p-2 border border-red-600 bg-red-100 text-red-700">{error}</div>}
-            <div className="text-gray-600 flex gap-2">par <Link to={`/profile/${localComment.author?._id}`} className="flex gap-2"><Avatar dimensions={6} user={localComment.author}></Avatar>{localComment.author?.username}</Link> le {new Date(localComment.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-            </div>
-            <p className="text-gray-800">{localComment.text || localComment.content}</p>
-            {isAuthor && (
-                <div className="flex justify-end gap-2">
-                    <Button onClick={() => setIsEditing(true)} disabled={isDeleting} className="text-[#4062BB] hover:text-[#2F4889]"><i className="fas fa-edit"></i> Modifier</Button>
-                    <Button onClick={() => setShowConfirm(true)} disabled={isDeleting} className="text-red-600 hover:text-red-800"><i className="fas fa-trash"></i> Supprimer</Button>
+            <div className="flex gap-2">
+                <Link to={`/profile/${localComment.author?._id}`}><Avatar dimensions={10} user={localComment.author} showName={false}></Avatar></Link>
+                <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                    <div className="text-gray-600 flex gap-2 flex-wrap text-sm">
+                        <Link to={`/profile/${localComment.author?._id}`} className="flex gap-2 font-semibold text-gray-600 hover:font-bold">
+                            <span className="font-semibold hover:underline">{localComment.author?.username}</span>
+                        </Link>
+                        {isChild && level >= 2 && rootReplyAuthor && (
+                            <span className="text-gray-500">
+                                &gt; <Link to={`/profile/${rootReplyAuthor?._id}`} className="hover:underline">{rootReplyAuthor?.username}</Link>
+                            </span>
+                        )}
+                        le {new Date(localComment.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    {isAuthor && (
+                        <div className="relative flex justify-end" ref={menuRef}>
+                            <Button onClick={() => setShowMenu(!showMenu)} noBorders icon="ellipsis-vertical">
+                            </Button>
+                            {showMenu && (
+                                <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-max">
+                                    <Button 
+                                        onClick={() => { setIsEditing(true); setShowMenu(false); }} 
+                                        disabled={isDeleting} 
+                                        icon="edit"
+                                        noBorders
+                                        full
+                                    >
+                                        Modifier
+                                    </Button>
+                                    <Button 
+                                        onClick={() => { setShowConfirm(true); setShowMenu(false); }} 
+                                        disabled={isDeleting} 
+                                        danger
+                                        noBorders
+                                        full
+                                        icon="trash"
+                                    >
+                                        Supprimer
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    </div>
+                    <p className="text-gray-800">{localComment.text || localComment.content}</p>
+                    
+                    {user && (
+                        <Button noBorders onClick={() => setIsResponding(true)}>Répondre</Button>
+                    )}
                 </div>
-            )}
-            {user && (
-            <Button onClick={() => setIsResponding(true)}>Répondre</Button>
-            )}
-            {!isChild && <CommentList comments={localComment.responses || []} onCommentUpdated={(updatedComment) => handleNestedCommentUpdated(updatedComment, 'update')} isChild={true} onCommentDeleted={(deletedComment) => handleNestedCommentUpdated(deletedComment, 'delete')} />}
+
+            </div>
+            {(localComment.responses && localComment.responses.length > 0) &&
+                <CommentList
+                    comments={localComment.responses || []}
+                    onCommentUpdated={(updatedComment) => handleNestedCommentUpdated(updatedComment, 'update')}
+                    isChild={true}
+                    level={level + 1}
+                    rootReplyAuthor={level >= 1 ? rootReplyAuthor : localComment.author}
+                    onCommentDeleted={(deletedComment) => handleNestedCommentUpdated(deletedComment, 'delete')}
+                    />
+            }
             {isResponding && (
                 <CommentForm
                     onSubmit={handleRespond}
@@ -144,6 +214,8 @@ const CommentCard = ({ comment, onCommentUpdated, onCommentDeleted, isChild = fa
                     confirmColor="bg-red-600"
                 />
             )}
+
+
         </li>
     );
 };

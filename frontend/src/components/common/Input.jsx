@@ -12,6 +12,7 @@ const Input = ({
     required,
     fileName,
     icon,
+    button,
     ...rest
 }) => {
     const reactId = useId();
@@ -98,13 +99,18 @@ const Input = ({
                     id={inputId}
                     name={name}
                     required={required}
-                    className={`border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F4889] bg-white  w-full ${icon ? 'pl-10' : ''} ${className}`}
+                    className={`border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F4889] bg-white  w-full ${icon ? 'pl-10' : ''} ${button ? 'pr-12' : ''} ${className}`}
                     type={type}
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
                     {...rest}
                 />
+                {button && (
+                    <div className="absolute inset-y-0 right-3 flex items-center">
+                        {button}
+                    </div>
+                )}
             </div>
         </div>
     );

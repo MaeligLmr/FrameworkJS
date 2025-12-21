@@ -103,7 +103,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
         <Input type="file" name="image" accept="image/*" label="Image" fileName={initialValues.imageName} />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col-reverse md:flex-row gap-4">
         {loading ? (
           <Loader />
         ) : (
@@ -111,13 +111,14 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
             <Button 
               type="button" 
               onClick={handleSubmitDraft} 
-              className="flex-1 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700"
+              light
+              full
             >
               Enregistrer en brouillon
             </Button>
             <Button 
               type="submit" 
-              className="flex-1 bg-[#F5BC5B] py-2 rounded-lg hover:bg-[#F2A218]"
+              full
             >
               {initialValues.title ? 'Mettre à jour' : 'Publier'}
             </Button>

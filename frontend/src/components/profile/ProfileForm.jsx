@@ -48,7 +48,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-lg w-full">            
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-lg w-full max-h-[65vh] overflow-auto">            
             {error && (
                 <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded-lg">
                     {error}
@@ -104,7 +104,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
             />
 
             <div className="flex gap-2">
-                <Button type="submit" disabled={loading} className="w-full py-2 px-3 bg-[#4062BB] rounded-lg text-white">
+                <Button type="submit" disabled={loading} full>
                     {loading ? <Loader /> : 'Enregistrer les modifications'}
                 </Button>
             </div>

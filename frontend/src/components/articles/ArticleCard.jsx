@@ -1,18 +1,11 @@
 import { Link } from "react-router-dom";
+import { getCategoryColor } from "../../utils/helpers";
+import Avatar from "../profile/avatar";
 
 export const ArticleCard = ({ article }) => {
-  const getCategoryColor = (category) => {
-    const colors = {
-      'Cinéma & Séries': 'bg-red-100 text-red-800',
-      'Musique': 'bg-purple-100 text-purple-800',
-      'Comics, Manga': 'bg-pink-100 text-pink-800',
-      'Internet': 'bg-blue-100 text-[#2F4889]'
-    };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
 
   return (
-    <div className={`border rounded-lg p-4 border-[#2F4889] bg-white transition-shadow ${!article.published ? 'bg-gray-50' : ''}`}>
+    <div className={`border rounded-lg p-4 border-[#2F4889] bg-white hover:bg-[#f1f3f9e0] ${!article.published ? 'bg-gray-100' : ''}`}>
       <Link to={`/articles/${article._id}`}>
         {!article.published && (
           <div className="mb-2">
@@ -49,8 +42,8 @@ export const ArticleCard = ({ article }) => {
           {article.summary}
         </p>
         
-        <div className="text-sm text-gray-500">
-          Par <span className="font-medium">{article.author?.username || 'Anonyme'}</span> le {new Date(article.publishedAt || article.createdAt || article.date || article.updatedAt).toLocaleDateString('fr-FR')}
+        <div className="text-sm text-gray-500 flex gap-2 items-center">
+         <Avatar user={article.author} dimensions={6} hoverDisabled={true} showName={true}/> le {new Date(article.publishedAt || article.createdAt || article.date || article.updatedAt).toLocaleDateString('fr-FR')}
         </div>
       </Link>
     </div>

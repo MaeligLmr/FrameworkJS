@@ -1,11 +1,11 @@
 @import "tailwindcss";
 @import "@fortawesome/fontawesome-free/css/all.css";
-
+@import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: system-ui, Avenir, Helvetica, Arial, Racing Sans One, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
 
@@ -25,15 +25,19 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
+  font-family: "Exo 2", sans-serif;
 }
 
 h1 {
   font-size: 2.2em;
+  font-family: "Racing Sans One", sans-serif;
+  font-weight: 900;
   line-height: 1.1;
   color : #2A407A;
 }
 
 h2{
+  font-family: 'Racing Sans One', sans-serif;
   color : #2A407A;
 }
 

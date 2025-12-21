@@ -1,12 +1,13 @@
 
 
-const Avatar = ({ dimensions, user }) => {
+const Avatar = ({ dimensions, user, hoverDisabled=false, showName=true }) => {
     const size = `${dimensions * 4}px`; // Convert Tailwind units (1 = 4px)
     
     if (!user.avatar) {
         return (
+            <div className={`flex items-center gap-2 ${hoverDisabled ? '' : 'group'}`}>
             <div 
-                className="rounded-full overflow-hidden flex items-center justify-center bg-gray-200"
+                className={`rounded-full overflow-hidden flex items-center justify-center bg-gray-200 ${hoverDisabled ? '' : 'group-hover:outline-offset-2 group-hover:outline-2 group-hover:outline-[#4062BB]'}`}
                 style={{ width: size, height: size }}
             >
                 <svg
@@ -22,14 +23,24 @@ const Avatar = ({ dimensions, user }) => {
                     />
                 </svg>
             </div>
+            {showName && user.username && (
+                <span className={`text-gray-600 font-semibold ${hoverDisabled ? '' : 'group-hover:font-bold'}`}>{user.username}</span>
+            )}
+            </div>
         )
     } else {
         return (
+            <div className={`flex items-center gap-2 ${hoverDisabled ? '' : 'group'}`}>
             <div 
-                className="rounded-full overflow-hidden"
+                className={`rounded-full overflow-hidden ${hoverDisabled ? '' : 'group-hover:outline-2 group-hover:outline-offset-2 group-hover:outline-[#4062BB]'}`}
                 style={{ width: size, height: size }}
             >
                 <img src={user.avatar} alt="Avatar" className="object-cover w-full h-full" />
+            
+            </div>
+            {showName && user.username && (
+                <span className={`text-gray-600 font-semibold ${hoverDisabled ? '' : 'group-hover:font-bold'}`}>{user.username}</span>
+            )}
             </div>
         );
     }

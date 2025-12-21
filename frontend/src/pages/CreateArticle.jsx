@@ -30,7 +30,7 @@ export const CreateArticle = () => {
   };
 
   return (
-    <main className="p-6 max-w-2xl mx-auto">
+    <main className="p-6 max-w-2xl mx-auto min-h-screen">
       <h1 className="text-2xl font-semibold mb-4">Créer un article</h1>
       <ArticleForm initialValues={{}} onSubmit={handleSubmit} loading={loading} errors={error} />
     </main>

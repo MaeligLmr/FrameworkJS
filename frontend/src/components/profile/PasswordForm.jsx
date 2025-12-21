@@ -50,9 +50,7 @@ export const PasswordForm = ({ onSubmit, loading = false }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-6 rounded-lg w-full">
-            <h3 className="text-lg font-semibold mb-4">Changer mon mot de passe</h3>
-
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
             {error && (
                 <div className="p-3 bg-red-100 border border-red-600 text-red-700 rounded-lg">
                     {error}
