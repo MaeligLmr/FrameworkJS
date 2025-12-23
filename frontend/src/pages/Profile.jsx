@@ -28,6 +28,7 @@ export const Profile = () => {
     const [articles, setArticles] = useState([]);
     const [loadingArticles, setLoadingArticles] = useState(false);
     const [articleFilter, setArticleFilter] = useState('all');
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -306,7 +307,7 @@ export const Profile = () => {
                                 </Button>
 
                                 <Button
-                                    onClick={handleLogout}
+                                    onClick={() => { setIsSidebarOpen(false); setShowLogoutConfirm(true); }}
                                     light
                                     full
                                     danger
@@ -342,6 +343,16 @@ export const Profile = () => {
                         loading={passwordLoading}
                     />
                 </PopupForm>
+
+                {showLogoutConfirm && (
+                    <PopupConfirm
+                        message="Êtes-vous sûr de vouloir vous déconnecter ?"
+                        onConfirm={handleLogout}
+                        onCancel={() => setShowLogoutConfirm(false)}
+                        confirmText="Se déconnecter"
+                        danger
+                    />
+                )}
 
             </div>
         </main>

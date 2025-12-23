@@ -211,7 +211,7 @@ const CommentCard = ({
                     onConfirm={handleDelete}
                     onCancel={() => setShowConfirm(false)}
                     confirmText="Supprimer"
-                    confirmColor="bg-red-600"
+                    danger
                 />
             )}
 

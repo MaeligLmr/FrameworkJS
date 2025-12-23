@@ -2,13 +2,17 @@ import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import Avatar from '../profile/avatar';
 import Button from '../common/Button';
+import { useState } from 'react';
+import PopupConfirm from '../common/PopupConfirm';
 
 export const Navbar = () => {
   const { user, authToken, logout } = useAuth();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   return (
+    <>
     <nav className="gap-4 flex justify-between items-center w-full">
-        <Link to="/" className='text-[#4062BB] flex items-center gap-2'><img src="/public/Zentra.webp" alt="Zentra Logo" className="w-8 h-8" /></Link>
+        <Link to="/" className='text-[#2A407A] flex items-baseline home'><img src="/public/zentra.svg" alt="Z" className="w-8 h-auto" /></Link>
         {authToken || user ? (
           <>
             <div className='flex gap-4 items-center'>
@@ -16,7 +20,7 @@ export const Navbar = () => {
             <Link to={`/profile/${user._id}`} className='py-2'>
             <Avatar dimensions={8} user={user} showName={false}/>
             </Link>
-            <Button onClick={logout} noBorders><i className="fas fa-sign-out-alt"></i></Button>
+            <Button onClick={() => setShowLogoutConfirm(true)} noBorders icon="sign-out-alt" rounded></Button>
             </div>
           </>
         ) : (
@@ -26,6 +30,17 @@ export const Navbar = () => {
           </div>
         )}
     </nav>
+    
+    {showLogoutConfirm && (
+      <PopupConfirm
+        message="Êtes-vous sûr de vouloir vous déconnecter ?"
+        onConfirm={logout}
+        onCancel={() => setShowLogoutConfirm(false)}
+        confirmText="Se déconnecter"
+        danger
+      />
+    )}
+    </>
   );
 };
 

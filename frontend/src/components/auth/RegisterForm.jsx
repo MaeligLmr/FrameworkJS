@@ -69,7 +69,7 @@ const RegisterForm = ({ onSubmit, loading = false }) => {
 				{loading ? (
 					<Loader />
 				) : (
-					<Button type="submit" className="w-full">Créer un compte</Button>
+					<Button type="submit" full>Créer un compte</Button>
 				)}
 			</div>
 		</form>

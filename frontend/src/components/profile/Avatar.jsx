@@ -39,7 +39,7 @@ const Avatar = ({ dimensions, user, hoverDisabled=false, showName=true }) => {
             
             </div>
             {showName && user.username && (
-                <span className={`text-gray-600 font-semibold ${hoverDisabled ? '' : 'group-hover:font-bold'}`}>{user.username}</span>
+                <span className={`text-gray-600 font-semibold ${hoverDisabled ? '' : 'group-hover:underline'}`}>{user.username}</span>
             )}
             </div>
         );

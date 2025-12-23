@@ -12,6 +12,7 @@ const PopupForm = ({ title, onClose, children, isOpen }) => {
           noBorders
           type="button"
           icon='times'
+          rounded
         >
         </Button></div>
         {title && <h2 className="text-2xl font-bold mb-4">{title}</h2>}

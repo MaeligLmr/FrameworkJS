@@ -48,6 +48,14 @@ export async function updateArticle(id, payload){
   return api.request(`/articles/${id}`, {method:'PUT', body: formData});
 }
 
+export async function publishArticle(id){
+  return api.request(`/articles/${id}/publish`, {method:'PATCH'});
+}
+
+export async function unpublishArticle(id){
+  return api.request(`/articles/${id}/unpublish`, {method:'PATCH'});
+}
+
 export async function deleteArticle(id){
   return api.request(`/articles/${id}`, {method:'DELETE'});
 }
@@ -60,4 +68,4 @@ export async function getViewsByAuthor(authorId) {
   return api.request(`/articles/author/views/${authorId}`);
 }
 
-export default { fetchArticles, createArticle, fetchArticle, updateArticle, deleteArticle, getCountArticlesByAuthor, getViewsByAuthor, fetchMyArticles };
+export default { fetchArticles, createArticle, fetchArticle, updateArticle, publishArticle, unpublishArticle, deleteArticle, getCountArticlesByAuthor, getViewsByAuthor, fetchMyArticles };
