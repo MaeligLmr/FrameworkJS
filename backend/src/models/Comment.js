@@ -40,11 +40,6 @@ const commentSchema = new mongoose.Schema(
         },
 
         // Modération
-        approved: {
-            type: Boolean,
-            default: false
-        },
-
         reported: {
             type: Boolean,
             default: false
@@ -64,18 +59,6 @@ const commentSchema = new mongoose.Schema(
 
 // INDEX pour optimiser les requêtes
 commentSchema.index({ article: 1, createdAt: -1 });
-
-// Méthodes d'instance
-commentSchema.methods.approve = function () {
-    this.approved = true;
-    return this.save();
-};
-
-// Méthodes statiques
-commentSchema.statics.findApprovedByArticle = function (articleId) {
-    return this.find({ article: articleId, approved: true })
-        .sort({ createdAt: -1 });
-};
 
 // Populate responses (replies) pour un commentaire
 commentSchema.methods.populateResponses = async function () {

@@ -100,24 +100,6 @@ export const getCommentsByArticle = async (req, res, next) => {
 };
 
 
-export const getApprovedComments = async (req, res, next) => {
-    try {
-        const { articleId } = req.params;
-        const article = await Article.findById(articleId);
-        if (!article) {
-            return next(new AppError('Article non trouvé', 404, ['Article non trouvé']));
-        }
-        const comments = await Comment.findApprovedByArticle(articleId);
-        res.status(200).json({
-            success: true,
-            count: comments.length,
-            data: comments
-        });
-    } catch (err) {
-        next(AppError.from(err));
-    }
-};
-
 export const updateComment = async (req, res, next) => {
     try {
         const { commentId } = req.params;

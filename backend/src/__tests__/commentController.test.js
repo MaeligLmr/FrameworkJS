@@ -5,7 +5,6 @@ const CommentMock = {
   create: jest.fn(),
   countDocuments: jest.fn(),
   find: jest.fn(),
-  findApprovedByArticle: jest.fn(),
   findByIdAndUpdate: jest.fn(),
   findByIdAndDelete: jest.fn()
 };
@@ -22,7 +21,6 @@ await jest.unstable_mockModule('../models/Comment.js', () => ({
 const {
   createComment,
   getCommentsByArticle,
-  getApprovedComments,
   updateComment,
   deleteComment
 } = await import('../controller/commentController.js');
@@ -89,19 +87,6 @@ describe('commentController', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     const expectedData = comments.map(c => ({ ...c, responses: [] }));
     expect(res.json).toHaveBeenCalledWith({ success: true, count: 2, data: expectedData });
-  });
-
-  test('getApprovedComments renvoie seulement approuvés', async () => {
-    ArticleMock.findById.mockResolvedValue({ _id: 'a1' });
-    CommentMock.findApprovedByArticle.mockResolvedValue([{ _id: 'c1', approved: true }]);
-    const req = { params: { articleId: 'a1' } };
-    const res = createRes();
-    const next = jest.fn();
-
-    await getApprovedComments(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ success: true, count: 1, data: [{ _id: 'c1', approved: true }] });
   });
 
   test('updateComment met à jour le commentaire', async () => {
