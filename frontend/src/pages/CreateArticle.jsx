@@ -1,3 +1,8 @@
+/**
+ * CreateArticle — Page de création d'article
+ * Affiche le formulaire de création et redirige vers la page de détail
+ * après sauvegarde, avec `state.from` pour améliorer la navigation retour.
+ */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ArticleForm from '../components/articles/ArticleForm';
@@ -8,6 +13,7 @@ export const CreateArticle = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState([]);
 
+  // Soumet le formulaire et redirige vers l'article créé
   const handleSubmit = async (payload) => {
     setError([]);
     try {

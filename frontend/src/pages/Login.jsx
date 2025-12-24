@@ -1,3 +1,8 @@
+/**
+ * Login — Page de connexion
+ * Soumet les identifiants, met à jour le contexte d'authentification
+ * et redirige vers l'accueil en cas de succès.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginForm } from '../components/auth/LoginForm';
@@ -10,6 +15,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
 
+  // Soumet le formulaire de connexion
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);

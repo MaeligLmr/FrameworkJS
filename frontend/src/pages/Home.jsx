@@ -1,3 +1,8 @@
+/**
+ * Home — Page d'accueil
+ * Affiche la présentation et la liste d'articles avec recherche, filtres,
+ * tri et chargement infini (infinite scroll).
+ */
 import { useEffect, useState, useCallback, useRef } from 'react';
 import articleService from '../services/articleService';
 import ArticleList from '../components/articles/ArticleList';
@@ -28,6 +33,7 @@ export const Home = () => {
   const { user } = useAuth();
   const observerTarget = useRef(null);
 
+  // Récupère les articles en fonction des filtres/tri/page
   const fetchArticles = useCallback(async (pageNum, reset = false) => {
     if (loading) return;
 
@@ -59,7 +65,7 @@ export const Home = () => {
     }
   }, [search, category, sort, loading]);
 
-  // Reset and fetch on filter change
+  // Réinitialise et recharge lors des changements de filtres
   useEffect(() => {
     setPage(1);
     setArticles([]);
@@ -67,7 +73,7 @@ export const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category, sort]);
 
-  // Infinite scroll observer
+  // Observateur pour le défilement infini
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -90,7 +96,7 @@ export const Home = () => {
     };
   }, [hasMore, loading]);
 
-  // Fetch more when page changes
+  // Charge plus d'articles quand la page augmente
   useEffect(() => {
     if (page > 1) {
       fetchArticles(page);

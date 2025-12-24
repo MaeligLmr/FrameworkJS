@@ -1,3 +1,8 @@
+/**
+ * Register — Page d'inscription
+ * Valide la confirmation du mot de passe, crée le compte via le contexte,
+ * et redirige ensuite vers l'accueil avec un message.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import RegisterForm from '../components/auth/RegisterForm';
@@ -9,6 +14,7 @@ export const Register = () => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Soumet le formulaire d'inscription avec validation de confirmation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);

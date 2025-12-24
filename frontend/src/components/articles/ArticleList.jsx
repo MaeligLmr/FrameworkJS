@@ -1,3 +1,7 @@
+/**
+ * ArticleList — Liste d'articles avec Masonry
+ * Affiche les cartes `ArticleCard` dans une grille responsive en colonnes.
+ */
 import { ArticleCard } from "./ArticleCard";
 import Masonry from "react-masonry-css";
 

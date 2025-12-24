@@ -1,3 +1,8 @@
+/**
+ * ProfileForm — Formulaire de profil
+ * Permet de modifier prénom, nom, nom d'utilisateur, email et avatar.
+ * Utilise un submit non contrôlé pour construire un payload compatible upload.
+ */
 import { useState } from "react";
 import Loader from "../common/Loader";
 import Input from "../common/Input";
@@ -13,6 +18,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
     });
     const [error, setError] = useState(null);
 
+    // Met à jour l'état local pour les champs texte et fichier
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         if (type === 'file') {
@@ -28,6 +34,7 @@ export const ProfileForm = ({ user, onSubmit, loading = false }) => {
         }
     };
 
+    // Construit le payload et délègue au parent via onSubmit
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);

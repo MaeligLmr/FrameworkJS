@@ -12,29 +12,56 @@ import Button from '../components/common/Button';
 import Avatar from '../components/profile/avatar';
 import { getCategoryColor } from '../utils/helpers';
 
+/**
+ * Page de détail d'un article
+ * Affiche un article complet avec ses commentaires, permet l'édition/suppression pour l'auteur,
+ * et la publication/dépublication. Gère également l'ajout de commentaires pour les utilisateurs connectés.
+ * 
+ * Fonctionnalités :
+ * - Affichage de l'article avec son auteur, catégorie, vues
+ * - Menu d'actions pour l'auteur (éditer, publier/dépublier, supprimer)
+ * - Système de commentaires imbriqués avec réponses
+ * - Modal d'image en plein écran
+ * - Confirmations pour les actions destructives
+ */
 export const ArticleDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // ID de l'article depuis l'URL
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user } = useAuth(); // Utilisateur connecté
+  
+  // États pour l'article
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // États pour l'édition
   const [deleting, setDeleting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [editErrors, setEditErrors] = useState([]);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
+  
+  // États pour les confirmations
+  const [showConfirm, setShowConfirm] = useState(false); // Confirmation de suppression
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false); // Confirmation publish/unpublish
+  
+  // États pour les commentaires
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState([]);
   const [showCommentForm, setShowCommentForm] = useState(false);
+  
+  // États pour l'UI
   const [showImageModal, setShowImageModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef(null); // Référence pour fermer le menu au clic extérieur
 
+  /**
+   * Gère le retour arrière intelligent
+   * - Si venu de /create, remonte de 2 pages
+   * - Sinon retourne à la page précédente ou à l'accueil
+   */
   const handleBack = () => {
     const cameFromCreate = location.state?.from === '/create';
     if (cameFromCreate && window.history.length > 2) {
@@ -46,6 +73,7 @@ export const ArticleDetail = () => {
     }
   };
 
+  // Vérifie si l'utilisateur connecté est l'auteur de l'article
   const isAuthor = article && user && (article.author?._id === user._id)
 
   useEffect(() => {
@@ -174,7 +202,7 @@ export const ArticleDetail = () => {
   if (editing && isAuthor) {
     return (
       <main className="p-6 max-w-3xl mx-auto">
-        <Link to="#" onClick={() => setEditing(false)} className="text-sm text-[#4062BB]">← Annuler</Link>
+        <Link to="#" onClick={() => setEditing(false)} className="text-[#4062BB] rounded-full hover:bg-gray-100 font-bold text-lg h-10 w-10 p-2"><i className="fas fa-arrow-left"></i></Link>
         <h1 className="text-2xl font-semibold mt-4 mb-4">Modifier l'article</h1>
         <ArticleForm initialValues={article} onSubmit={handleUpdate} loading={updating} errors={editErrors} />
       </main>

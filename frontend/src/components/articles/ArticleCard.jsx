@@ -1,3 +1,8 @@
+/**
+ * ArticleCard — Carte d'article
+ * Affiche image, catégorie, vues, titre, résumé et auteur.
+ * Indique visuellement l'état brouillon.
+ */
 import { Link } from "react-router-dom";
 import { getCategoryColor } from "../../utils/helpers";
 import Avatar from "../profile/avatar";

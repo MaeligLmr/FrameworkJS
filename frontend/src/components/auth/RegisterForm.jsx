@@ -1,3 +1,8 @@
+/**
+ * RegisterForm — formulaire d'inscription
+ * Non contrôlé : collecte les valeurs via l'événement de soumission.
+ * Affiche des champs obligatoires et permet d'afficher/masquer le mot de passe.
+ */
 import Input from '../common/Input';
 import Loader from '../common/Loader';
 import Button from '../common/Button';
@@ -6,6 +11,7 @@ import { useState } from 'react';
 const RegisterForm = ({ onSubmit, loading = false }) => {
 	const [showPassword, setShowPassword] = useState(false);
 
+	// Délègue la soumission à la prop onSubmit
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (typeof onSubmit === 'function') {

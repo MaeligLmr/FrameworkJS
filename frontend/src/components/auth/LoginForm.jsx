@@ -1,3 +1,7 @@
+/**
+ * LoginForm — formulaire de connexion
+ * Non contrôlé : lit les valeurs via l'événement de soumission.
+ */
 import Input from '../common/Input';
 import Loader from '../common/Loader';
 import Button from '../common/Button';
@@ -5,6 +9,7 @@ import { useState } from 'react';
 
 export const LoginForm = ({ onSubmit, loading = false }) => {
     const [showPassword, setShowPassword] = useState(false);
+    // Délègue la soumission à la prop onSubmit
     const handleSubmit = (e) => {
         e.preventDefault();
         if (typeof onSubmit === 'function') {

@@ -12,16 +12,20 @@ const CATEGORIES = [
 ];
 
 /**
- * Uncontrolled ArticleForm
- * Props:
- * - initialValues: { title, category, excerpt, content, published }
- * - onSubmit: async function(payload, isDraft) => void
- * - loading: boolean
- * - errors: array|string
+ * ArticleForm — Formulaire d'article (non contrôlé)
+ * Envoie un `payload` avec titre, catégorie, contenu, image et état de publication.
+ * Valide dynamiquement pour activer/désactiver les boutons.
+ * 
+ * Props :
+ * - initialValues : { title, category, excerpt, content, published }
+ * - onSubmit : async function(payload) => void (inclut `published: true/false`)
+ * - loading : boolean
+ * - errors : array|string
  */
 const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [] }) => {
   const [formValid, setFormValid] = useState(false);
 
+  // Vérifie la validité minimale du formulaire
   const checkFormValidity = (form) => {
     const title = form.title?.value?.trim() || '';
     const category = form.category?.value || '';
@@ -38,6 +42,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
     return isValid;
   };
 
+  // Revalide à chaque changement pour activer/désactiver les boutons
   const handleFormChange = (e) => {
     const form = e.target.closest('form');
     if (form) {
@@ -45,6 +50,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
     }
   };
 
+  // Soumission en mode publication
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -64,6 +70,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
     if (typeof onSubmit === 'function') await onSubmit(payload);
   };
 
+  // Soumission en mode brouillon
   const handleSubmitDraft = async (e) => {
     e.preventDefault();
     const form = e.currentTarget?.form;

@@ -1,3 +1,7 @@
+/**
+ * PasswordForm — Formulaire de changement de mot de passe
+ * Valide la correspondance et la longueur, puis délègue au parent via onSubmit.
+ */
 import { useState } from "react";
 import Loader from "../common/Loader";
 import Input from "../common/Input";
@@ -12,6 +16,7 @@ export const PasswordForm = ({ onSubmit, loading = false }) => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
+    // Met à jour les champs du formulaire
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -20,6 +25,7 @@ export const PasswordForm = ({ onSubmit, loading = false }) => {
         }));
     };
 
+    // Vérifie et soumet les nouveaux mots de passe
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);

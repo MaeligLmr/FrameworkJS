@@ -1,14 +1,27 @@
+/**
+ * Service API centralisé avec Axios
+ * Gère toutes les requêtes HTTP vers le backend avec :
+ * - Injection automatique du token JWT
+ * - Gestion centralisée des erreurs 401 (déconnexion auto)
+ * - Configuration de l'URL de base depuis les variables d'environnement
+ */
+
 import axios from 'axios';
 
+// URL de base de l'API depuis les variables d'environnement Vite
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-// Create axios instance
+// Création de l'instance axios avec configuration de base
 const axiosInstance = axios.create({
   baseURL: API_BASE,
-  // Don't set default Content-Type - let each request decide
+  // Ne pas définir de Content-Type par défaut - laisse chaque requête décider
+  // (important pour les FormData avec images)
 });
 
-// Request interceptor to add token
+/**
+ * Intercepteur de requête
+ * Ajoute automatiquement le token JWT dans les headers Authorization
+ */
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -22,31 +35,42 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle token expiration
+/**
+ * Intercepteur de réponse
+ * Gère les erreurs 401 (non autorisé) en déconnectant l'utilisateur
+ * et en redirigeant vers la page de connexion
+ */
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
+    // Si erreur 401 et pas déjà sur login/register
     if (error.response?.status === 401) {
-      // Don't redirect if already on login/register pages
+      // Ne pas rediriger si déjà sur les pages de connexion/inscription
       if (typeof window !== 'undefined' && 
           (window.location.pathname === '/login' || window.location.pathname === '/register')) {
         return Promise.reject(error.response?.data || error);
       }
       
+      // Nettoyage du localStorage et redirection
       try {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       } catch {
-        // ignore storage errors
+        // Ignorer les erreurs de stockage (mode privé, etc.)
       }
     }
     return Promise.reject(error.response?.data || error);
   }
 );
 
-// Wrapper function to maintain compatibility with existing code
+/**
+ * Fonction wrapper pour maintenir la compatibilité avec le code existant
+ * @param {string} path - Chemin de l'endpoint (ex: '/articles')
+ * @param {Object} options - Options de la requête (method, body, etc.)
+ * @returns {Promise<any>} - Réponse de l'API
+ */
 export async function request(path, options = {}) {
   const { method = 'GET', headers, body, ...restOptions } = options;
   

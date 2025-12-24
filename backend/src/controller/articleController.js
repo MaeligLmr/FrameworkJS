@@ -1,19 +1,29 @@
+/**
+ * Contrôleur des articles
+ * Gère toutes les opérations CRUD sur les articles de blog
+ * Inclut les fonctionnalités de publication, recherche, filtrage et pagination
+ */
+
 import Article from '../models/Article.js';
 import { AppError } from '../utils/AppError.js';
 
 /**
- * Crée un nouvel article à partir des données fournies dans req.body et renvoie la réponse JSON.
- * @param {import('express').Request} req Requête HTTP — body doit contenir { title, content, author, category }
- * @param {import('express').Response} res Réponse HTTP
- * @returns {Promise<import('express').Response>} Réponse JSON avec l'article créé (201) ou une erreur (4xx/5xx)
+ * Crée un nouvel article (publié ou en brouillon)
+ * L'auteur est extrait du token JWT
+ * Gère l'upload d'image via Cloudinary (optionnel)
+ * @route POST /api/articles
  */
 export const createArticle = async (req, res, next) => {
     const { title, content, category, published } = req.body;
+    // Récupération de l'image uploadée (Cloudinary) ou fournie manuellement
     const imageUrl = req.file?.path || req.body.imageUrl;
     const imageName = req.file?.originalname || req.body.imageName;
+    // L'auteur est l'utilisateur connecté
     const author = req.user?._id;
+    // Extraction de l'extension du fichier image
     const imageExtension = req.file?.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i)?.[1].toLowerCase() || req.body.imageExtension;
     try {
+        // Création de l'article avec validation Mongoose
         const newArticle = new Article({ 
             title, 
             content, 
@@ -25,9 +35,11 @@ export const createArticle = async (req, res, next) => {
             published
         });
         const saved = await newArticle.save();
+        // Message personnalisé selon l'état de publication
         const message = saved.published ? "Article publié avec succès" : "Article enregistré en brouillon";
         return res.status(201).json({success : true, message, data : saved});
     } catch (err) {
+        // Gestion spécifique des erreurs de validation Mongoose
         if(err.name === 'ValidationError') {
             return res.status(400).json({
                 success: false,
@@ -44,6 +56,10 @@ export const createArticle = async (req, res, next) => {
     }
 }
 
+/**
+ * Compte le nombre total d'articles d'un auteur
+ * @route GET /api/articles/author/count/:authorId
+ */
 export const getCountArticlesByAuthor = async (req, res) => {
     const { authorId } = req.params;
     try {
@@ -54,6 +70,10 @@ export const getCountArticlesByAuthor = async (req, res) => {
     }
 }
 
+/**
+ * Calcule le nombre total de vues cumulées des articles d'un auteur
+ * @route GET /api/articles/author/views/:authorId
+ */
 export const getViewsByAuthor = async (req, res) => {
     const { authorId } = req.params;
     try {
@@ -65,6 +85,11 @@ export const getViewsByAuthor = async (req, res) => {
     }
 }
 
+/**
+ * Récupère un article par son ID et incrémente son compteur de vues
+ * Vérifie les permissions : seul l'auteur peut voir ses brouillons
+ * @route GET /api/articles/:id
+ */
 export const getArticleById = async (req, res, next) => {
     const { id } = req.params;
     try {
@@ -81,6 +106,7 @@ export const getArticleById = async (req, res, next) => {
             }
         }
         
+        // Incrémente le compteur de vues
         await article.incrementViews();
         return res.status(200).json(article);
     } catch (err) {
@@ -88,11 +114,24 @@ export const getArticleById = async (req, res, next) => {
     }
 }
 
+/**
+ * Récupère tous les articles avec filtres, pagination et tri
+ * Filtres disponibles :
+ * - search : recherche dans titre et contenu
+ * - author : filtre par auteur (accepte 'me' pour l'utilisateur connecté)
+ * - category : filtre par catégorie
+ * - showDrafts : inclut les brouillons (seulement pour l'auteur)
+ * Pagination : page, limit
+ * Tri : recent (défaut), oldest, views
+ * @route GET /api/articles
+ */
 export const getAllArticles = async (req, res, next) => {
     try {
         let { search, author, category, page = 1, limit = 10, sort = 'recent', showDrafts } = req.query;
         const query = {};
         const requesterId = req.user?._id;
+        
+        // Conversion de 'me' en ID de l'utilisateur connecté
         if(author === 'me' && requesterId){
             author = requesterId;
         } else if(author === 'me' && !requesterId){
@@ -159,20 +198,29 @@ export const getAllArticles = async (req, res, next) => {
     }
 }
 
+/**
+ * Met à jour un article existant
+ * Permet de modifier le titre, contenu, catégorie et image
+ * Empêche explicitement le changement d'auteur pour des raisons de sécurité
+ * @route PUT /api/articles/:id
+ */
 export const updateArticle = async (req, res) => {
     const { id } = req.params;
     const updates = { ...req.body };
+    // Gestion de l'upload d'une nouvelle image
     if (req.file?.path) {
         updates.imageUrl = req.file.path;
         updates.imageName = req.file.originalname;
+        // Extraction de l'extension du fichier
         const extMatch = req.file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/i);
         if (extMatch) {
             updates.imageExtension = extMatch[1].toLowerCase();
         }
     }
-    // éviter le changement d'auteur via update
+    // Empêcher le changement d'auteur pour des raisons de sécurité
     if (updates.author) delete updates.author;
     try {
+        // Mise à jour avec validation Mongoose
         const article = await Article.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!article) {
             return res.status(404).json({ message: 'Article non trouvé' });
@@ -184,6 +232,11 @@ export const updateArticle = async (req, res) => {
     }
 }
 
+/**
+ * Supprime définitivement un article
+ * Supprime aussi l'article de la base de données de manière irréversible
+ * @route DELETE /api/articles/:id
+ */
 export const deleteArticle = async (req, res) => {
     const { id } = req.params;
     try {
@@ -197,6 +250,12 @@ export const deleteArticle = async (req, res) => {
     }
 }
 
+/**
+ * Publie un article (le rend visible publiquement)
+ * Utilise la méthode d'instance publish() du modèle Article
+ * Passe le champ published à true
+ * @route PATCH /api/articles/:id/publish
+ */
 export const publishArticle = async (req, res) => {
     const { id } = req.params;
     try {
@@ -204,6 +263,7 @@ export const publishArticle = async (req, res) => {
         if (!article) {
             return res.status(404).json({ message: 'Article non trouvé' });
         }
+        // Utilisation de la méthode d'instance publish()
         const updated = await article.publish();
         return res.status(200).json(updated);
     } catch (err) {
@@ -211,6 +271,12 @@ export const publishArticle = async (req, res) => {
     }
 }
 
+/**
+ * Dépublie un article (le repasse en brouillon)
+ * Utilise la méthode d'instance unpublish() du modèle Article
+ * Passe le champ published à false
+ * @route PATCH /api/articles/:id/unpublish
+ */
 export const unpublishArticle = async (req, res) => {
     const { id } = req.params;
     try {
@@ -218,6 +284,7 @@ export const unpublishArticle = async (req, res) => {
         if (!article) {
             return res.status(404).json({ message: 'Article non trouvé' });
         }
+        // Utilisation de la méthode d'instance unpublish()
         const updated = await article.unpublish();
         return res.status(200).json(updated);
     } catch (err) {

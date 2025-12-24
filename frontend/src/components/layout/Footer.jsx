@@ -1,3 +1,6 @@
+/**
+ * Footer — Pied de page simple
+ */
 export const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white text-sm p-4 text-center">

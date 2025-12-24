@@ -1,3 +1,8 @@
+/**
+ * ResetPassword — Page de réinitialisation
+ * Vérifie la correspondance des mots de passe puis appelle l'API pour réinitialiser.
+ * Redirige vers la connexion après succès.
+ */
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
@@ -13,6 +18,7 @@ export const ResetPassword = () => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Soumet le nouveau mot de passe (avec vérification de confirmation)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);

@@ -1,5 +1,11 @@
+/**
+ * Service des articles (frontend)
+ * Fournit des fonctions pour lister, créer, mettre à jour, publier/dépublier
+ * et supprimer des articles. Gère aussi les paramètres de recherche/pagination.
+ */
 import api from './api';
 
+/** Liste les articles avec filtres et pagination */
 export async function fetchArticles(params = {}){
   const { search, author, category, page, limit, sort, showDrafts } = params;
   const queryParams = new URLSearchParams();
@@ -16,10 +22,12 @@ export async function fetchArticles(params = {}){
   return api.request(`/articles${queryString ? `?${queryString}` : ''}`);
 }
 
+/** Récupère un article par son ID */
 export async function fetchArticle(id){
   return api.request(`/articles/${id}`);
 }
 
+/** Récupère les articles de l'utilisateur connecté (inclut brouillons) */
 export async function fetchMyArticles(){
   const queryParams = new URLSearchParams();
   queryParams.append('author', 'me');
@@ -28,6 +36,7 @@ export async function fetchMyArticles(){
   return api.request(`/articles?${body}`);
 }
 
+/** Crée un article (utilise FormData pour gérer l'image) */
 export async function createArticle(payload){
   const formData = new FormData();
   Object.entries(payload || {}).forEach(([key, value]) => {
@@ -38,6 +47,7 @@ export async function createArticle(payload){
   return api.request('/articles', {method:'POST', body: formData});
 }
 
+/** Met à jour un article (FormData pour l'image optionnelle) */
 export async function updateArticle(id, payload){
   const formData = new FormData();
   Object.entries(payload || {}).forEach(([key, value]) => {
@@ -48,22 +58,27 @@ export async function updateArticle(id, payload){
   return api.request(`/articles/${id}`, {method:'PUT', body: formData});
 }
 
+/** Publie un article (PATCH) */
 export async function publishArticle(id){
   return api.request(`/articles/${id}/publish`, {method:'PATCH'});
 }
 
+/** Dépublie un article (PATCH) */
 export async function unpublishArticle(id){
   return api.request(`/articles/${id}/unpublish`, {method:'PATCH'});
 }
 
+/** Supprime un article (DELETE) */
 export async function deleteArticle(id){
   return api.request(`/articles/${id}`, {method:'DELETE'});
 }
 
+/** Statistiques: nombre d'articles par auteur */
 export async function getCountArticlesByAuthor(authorId) {
   return api.request(`/articles/author/count/${authorId}`);
 }
 
+/** Statistiques: vues cumulées par auteur */
 export async function getViewsByAuthor(authorId) {
   return api.request(`/articles/author/views/${authorId}`);
 }

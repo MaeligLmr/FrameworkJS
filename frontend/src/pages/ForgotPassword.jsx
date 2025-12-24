@@ -1,3 +1,7 @@
+/**
+ * ForgotPassword — Page de demande de réinitialisation
+ * Envoie un email de réinitialisation si l'adresse existe.
+ */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import authService from '../services/authService';
@@ -10,6 +14,7 @@ export const ForgotPassword = () => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Soumet l'email pour demander un lien de réinitialisation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);

@@ -1,19 +1,23 @@
+/**
+ * CommentList — Liste de commentaires
+ * Affiche soit les commentaires racine (level = 0), soit aplatit les réponses
+ * en une seule liste pour les niveaux >= 1 afin de simplifier l'affichage.
+ * 
+ * Props :
+ * - comments : tableau de commentaires (peut contenir `responses`)
+ * - onDelete / onCommentUpdated / onCommentDeleted : callbacks pour mise à jour/suppression
+ * - level : niveau d'imbrication actuel (0 = racine)
+ * - rootReplyAuthor : auteur mentionné pour les réponses profondes
+ */
 import CommentCard from "./CommentCard";
 
 const CommentList = ({ comments = [], onDelete, onCommentUpdated, onCommentDeleted, level = 0, rootReplyAuthor = null }) => {
     const handleCallback = onCommentUpdated || onDelete;
-    console.log(
-        "CommentList level",
-        level,
-        "count",
-        Array.isArray(comments) ? comments.length : 0,
-        "responses per item",
-        Array.isArray(comments)
-            ? comments.map(c => ({ id: c._id || c.id, responses: Array.isArray(c.responses) ? c.responses.length : 0 }))
-            : []
-    );
+    // Log de debug (peut être retiré en prod)
+    // console.log('CommentList level', level, 'count', Array.isArray(comments) ? comments.length : 0);
 
-    // When rendering replies (level >= 1), flatten all descendants into the same list
+    // Lors du rendu des réponses (level >= 1), on aplatit tous les descendants
+    // dans une seule liste pour un affichage linéaire.
     const flattenReplies = (nodes, currentLevel, currentRootAuthor) => {
         return nodes.flatMap((n) => {
             const self = { node: n, level: currentLevel, rootReplyAuthor: currentRootAuthor };

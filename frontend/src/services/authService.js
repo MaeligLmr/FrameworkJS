@@ -1,5 +1,15 @@
+/**
+ * Service d'authentification (frontend)
+ * Fournit des helpers pour s'inscrire, se connecter, vérifier le token,
+ * gérer la réinitialisation de mot de passe et stocker le token/utilisateur.
+ * S'appuie sur le client `api` pour les requêtes HTTP.
+ */
 import api from './api';
 
+/**
+ * Connexion d'un utilisateur
+ * Enregistre le `token` et `user` dans `localStorage` si présents.
+ */
 export async function login(credentials){
   const res = await api.request('/auth/login', {
     method: 'POST',
@@ -18,6 +28,10 @@ export async function login(credentials){
   return res;
 }
 
+/**
+ * Inscription d'un nouvel utilisateur
+ * Enregistre le `token` et `user` en cas de succès.
+ */
 export async function signup(payload){
   const res = await api.request('/auth/signup', {
     method: 'POST',
@@ -35,10 +49,12 @@ export async function signup(payload){
   return res;
 }
 
+/** Vérifie l'email via un token fourni par lien */
 export async function verifyEmail(token) {
   return api.request(`/auth/verify-email/${token}`, { method: 'GET' });
 }
 
+/** Demande un email de réinitialisation de mot de passe */
 export async function forgotPassword(email) {
   return api.request('/auth/forgot-password', {
     method: 'POST',
@@ -47,6 +63,7 @@ export async function forgotPassword(email) {
   });
 }
 
+/** Réinitialise le mot de passe à l'aide d'un token temporaire */
 export async function resetPassword(token, password) {
   return api.request(`/auth/reset-password/${token}`, {
     method: 'POST',
@@ -55,6 +72,10 @@ export async function resetPassword(token, password) {
   });
 }
 
+/**
+ * Déconnexion
+ * Appelle le backend puis nettoie le `localStorage`.
+ */
 export async function logout(){
   return api.request('/auth/logout', {
     method: 'POST',
@@ -64,6 +85,10 @@ export async function logout(){
   });
 }
 
+/**
+ * Vérifie le token depuis le `localStorage` et récupère l'utilisateur
+ * Si invalide, nettoie le stockage local.
+ */
 export async function checkToken(){
   const token = localStorage.getItem('token');
   if (!token) return null;

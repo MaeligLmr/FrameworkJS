@@ -1,3 +1,7 @@
+/**
+ * Header — En-tête global
+ * Rend simplement la barre de navigation.
+ */
 import { Navbar } from './Navbar';
 
 export const Header = () => (

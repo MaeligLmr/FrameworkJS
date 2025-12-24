@@ -1,3 +1,15 @@
+/**
+ * Input — champ de saisie réutilisable
+ * Supporte les types standards et un mode spécial `file` avec libellé et aperçu.
+ * 
+ * Props clés :
+ * - type : 'text' par défaut, 'file' pour upload
+ * - value/onChange : contrôle externe (sauf mode file)
+ * - label : libellé affiché au-dessus
+ * - icon : icône à gauche à l'intérieur du champ
+ * - button : action à droite (ex: bouton afficher/cacher)
+ * - required : astérisque et attribut HTML requis
+ */
 import { useEffect } from 'react';
 import { useId, useRef, useState } from 'react';
 const Input = ({
@@ -19,11 +31,14 @@ const Input = ({
     const inputId = id || name || reactId;
     const [fileLabel, setFileLabel] = useState('Aucun fichier choisi');
     const objectUrlRef = useRef(null);
-    useEffect(() => async () => {
+    // Met à jour le libellé du fichier lorsque `fileName` change
+    useEffect(() => {
         setFileLabel(fileName || 'Aucun fichier choisi');
+        // nettoyage d'URL objet géré ailleurs quand on change de fichier
     }, [fileName]);
 
     if (type === 'file') {
+        // Gestion du changement de fichier : label + URL locale pour aperçu
         const handleFileChange = (e) => {
             const files = e.target.files;
             if (files && files.length > 0) {

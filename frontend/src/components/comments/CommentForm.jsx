@@ -2,13 +2,15 @@ import Button from '../common/Button';
 import Loader from '../common/Loader';
 
 /**
- * CommentForm - uncontrolled form for posting or editing a comment
- * Props:
- * - initialValue: initial comment text (for editing)
- * - onSubmit: async function(text) => void
- * - loading: boolean
- * - error: string or array
- * - onCancel: function to call on cancel
+ * CommentForm — Formulaire de commentaire (non contrôlé)
+ * Permet de poster ou d'éditer un commentaire.
+ * 
+ * Props :
+ * - initialValue : texte initial (mode édition)
+ * - onSubmit : fonction async(text) => void
+ * - loading : indicateur de chargement
+ * - error : message d'erreur (string ou array)
+ * - onCancel : callback sur annulation
  */
 const CommentForm = ({ initialValue = '', onSubmit, loading = false, error = null, onCancel }) => {
   const handleSubmit = async (e) => {

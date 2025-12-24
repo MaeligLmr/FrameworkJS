@@ -1,3 +1,9 @@
+/**
+ * Profile — Page de profil
+ * Affiche les informations de l'utilisateur (soi ou autre), ses statistiques
+ * et la liste de ses articles. Inclut panneau latéral pour modifier profil,
+ * changer le mot de passe et se déconnecter.
+ */
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../components/common/Button";
@@ -30,6 +36,7 @@ export const Profile = () => {
     const [articleFilter, setArticleFilter] = useState('all');
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+    // Chargement du profil, statistiques et articles
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -41,20 +48,20 @@ export const Profile = () => {
                     return;
                 }
 
-                // Fetch profile accordingly
+                                // Récupération du profil (soi ou autre utilisateur)
                 const profileRes = viewingOwn 
                   ? await userService.getUserProfile()
                   : await userService.getUserById(id);
                 const profile = profileRes?.data || (viewingOwn ? user : null);
                 setUserProfile(profile);
 
-                // Fetch all articles to count user's articles
+                // Statistiques (vues, articles, commentaires)
                 const targetId = (viewingOwn ? user?._id : id);
                 const countviews = await articleService.getViewsByAuthor(targetId);
                 const countArticles = await articleService.getCountArticlesByAuthor(targetId);
                 const countComments = await commentService.getCountCommentsByAuthor(targetId);
 
-                // Fetch articles for viewing own profile
+                // Articles personnels si on consulte son propre profil
                 if (viewingOwn) {
                     setLoadingArticles(true);
                     try {
@@ -87,11 +94,13 @@ export const Profile = () => {
         fetchData();
     }, [user, navigate, id, userProfile?._id]);
 
+    // Déconnexion et retour à l'accueil
     const handleLogout = () => {
         logout();
         navigate('/');
     };
 
+    // Met à jour les informations du profil (via PopupForm)
     const handleProfileUpdate = async (formData) => {
         setUpdateLoading(true);
         try {
@@ -105,6 +114,7 @@ export const Profile = () => {
         }
     };
 
+    // Change le mot de passe (via PopupForm)
     const handlePasswordChange = async (formData) => {
         setPasswordLoading(true);
         try {
@@ -277,6 +287,7 @@ export const Profile = () => {
                                     onClick={() => setIsSidebarOpen(false)}
                                     noBorders
                                     icon="times"
+                                    rounded
                                 >
                                 </Button>
                             </div>

@@ -1,3 +1,14 @@
+/**
+ * Avatar — Affiche l'avatar utilisateur
+ * Montre une image si disponible, sinon une icône par défaut.
+ * Peut afficher le nom, avec effets hover optionnels.
+ *
+ * Props :
+ * - dimensions : unité tailwind (1 = 4px), convertie en px
+ * - user : objet utilisateur { avatar, username }
+ * - hoverDisabled : désactive les effets au survol
+ * - showName : affiche le nom d'utilisateur
+ */
 
 
 const Avatar = ({ dimensions, user, hoverDisabled=false, showName=true }) => {

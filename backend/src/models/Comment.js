@@ -1,7 +1,15 @@
+/**
+ * Modèle Comment
+ * Représente un commentaire sur un article avec système de réponses imbriquées
+ * Supporte la modération avec un flag "reported"
+ * Utilise un système parent-enfant : le champ "comment" référence le commentaire parent
+ */
+
 import mongoose from 'mongoose';
 const commentSchema = new mongoose.Schema(
     {
-        // Contenu du commentaire
+        // ============== CONTENU ==============
+        /** Texte du commentaire (2-500 caractères) */
         content: {
             type: String,
             required: [true, 'Le contenu est obligatoire'],
@@ -10,46 +18,53 @@ const commentSchema = new mongoose.Schema(
             maxlength: [500, 'Maximum 500 caractères']
         },
 
-        // Auteur
+        // ============== AUTEUR ==============
+        /** Référence vers l'utilisateur auteur du commentaire */
         author: {
             type: mongoose.Schema.Types.ObjectId,
             required: [true, 'Auteur obligatoire'],
             ref: 'User'
         },
 
-        // Email (optionnel)
+        /** Email de l'auteur (optionnel, utilisé pour les notifications) */
         email: {
             type: String,
             trim: true,
             lowercase: true,
-            // simple, reliable email pattern
+            // Pattern simple et fiable pour valider l'email
             match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Email invalide']
         },
 
-        // RÉFÉRENCE vers l'article
+        // ============== RELATIONS ==============
+        /** Référence vers l'article commenté */
         article: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Article',
             required: [true, 'Article obligatoire']
         },
 
+        /** Référence vers le commentaire parent (null si commentaire de niveau racine) */
         comment :{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment',
             default: null
         },
 
-        // Modération
+        // ============== MODÉRATION ==============
+        /** Flag indiquant si le commentaire a été signalé comme inapproprié */
         reported: {
             type: Boolean,
             default: false
         }
     },
     {
+        // Ajoute automatiquement createdAt et updatedAt
         timestamps: true,
         toJSON: {
+            // Active les champs virtuels lors de la sérialisation JSON
             virtuals: true,
             transform: function (doc, ret) {
+                // Garantit que responses est toujours un tableau, même vide
                 if (!Array.isArray(ret.responses)) ret.responses = [];
                 return ret;
             }
@@ -57,10 +72,17 @@ const commentSchema = new mongoose.Schema(
     }
 );
 
-// INDEX pour optimiser les requêtes
+// ============== INDEX ==============
+/** Index composé pour optimiser les requêtes de commentaires par article */
 commentSchema.index({ article: 1, createdAt: -1 });
 
-// Populate responses (replies) pour un commentaire
+// ============== MÉTHODES D'INSTANCE ==============
+
+/**
+ * Peuple les réponses (commentaires enfants) d'un commentaire
+ * Utilise populate récursif pour inclure les informations des auteurs
+ * @returns {Promise<Comment>} Le commentaire avec ses réponses peuplées
+ */
 commentSchema.methods.populateResponses = async function () {
     await this.populate({
         path: 'responses',
@@ -73,13 +95,25 @@ commentSchema.methods.populateResponses = async function () {
     return this;
 };
 
+// ============== CHAMPS VIRTUELS ==============
+
+/**
+ * Relation virtuelle vers les réponses (commentaires ayant ce commentaire comme parent)
+ * Permet de construire un arbre de commentaires imbriqués
+ */
 commentSchema.virtual('responses', {
     ref: 'Comment',
     localField: '_id',
     foreignField: 'comment'
 });
 
-// Populate automatique
+// ============== MIDDLEWARE ==============
+
+/**
+ * Hook pre-find : Peuple automatiquement les relations
+ * S'applique à toutes les opérations find* (findOne, find, findById, etc.)
+ * Inclut l'article, le commentaire parent et l'auteur avec leurs détails
+ */
 commentSchema.pre(/^find/, function (next) {
     this.populate([
         {
