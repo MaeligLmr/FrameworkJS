@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import Loader from '../common/Loader';
@@ -19,9 +20,39 @@ const CATEGORIES = [
  * - errors: array|string
  */
 const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [] }) => {
+  const [formValid, setFormValid] = useState(false);
+
+  const checkFormValidity = (form) => {
+    const title = form.title?.value?.trim() || '';
+    const category = form.category?.value || '';
+    const content = form.content?.value?.trim() || '';
+
+    const isValid = 
+      title.length >= 3 &&
+      title.length > 0 &&
+      category.length > 0 &&
+      content.length >= 20 &&
+      content.length > 0;
+
+    setFormValid(isValid);
+    return isValid;
+  };
+
+  const handleFormChange = (e) => {
+    const form = e.target.closest('form');
+    if (form) {
+      checkFormValidity(form);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
+    
+    if (!checkFormValidity(form)) {
+      return;
+    }
+
     const file = form.image?.files?.[0];
     const payload = {
       title: form.title.value,
@@ -37,6 +68,11 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
     e.preventDefault();
     const form = e.currentTarget?.form;
     if (!form) return;
+    
+    if (!checkFormValidity(form)) {
+      return;
+    }
+
     const file = form.image?.files?.[0];
     const payload = {
       title: form.title.value,
@@ -49,7 +85,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} onChange={handleFormChange} className="space-y-4">
       {Array.isArray(errors) && errors.length > 0 && (
         <div>
           {errors.map((err, i) => (
@@ -96,7 +132,7 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
 
       <div>
         <label className="block text-sm font-medium mb-1">Contenu <span className="text-red-500">*</span></label>
-        <textarea name="content" defaultValue={initialValues.content || ''} required className="w-full border rounded-lg px-3 py-2 h-48 border-gray-300 bg-white focus:border-[#4062BB] focus:outline-none focus:ring-1 focus:ring-[#4062BB] transition-all" />
+        <textarea name="content" minLength={20} defaultValue={initialValues.content || ''} required className="w-full border rounded-lg px-3 py-2 h-48 border-gray-300 bg-white focus:border-[#4062BB] focus:outline-none focus:ring-1 focus:ring-[#4062BB] transition-all" />
       </div>
 
       <div>
@@ -110,14 +146,16 @@ const ArticleForm = ({ initialValues = {}, onSubmit, loading = false, errors = [
           <>
             <Button 
               type="button" 
-              onClick={handleSubmitDraft} 
+              onClick={handleSubmitDraft}
+              disabled={!formValid}
               light
               full
             >
               Enregistrer en brouillon
             </Button>
             <Button 
-              type="submit" 
+              type="submit"
+              disabled={!formValid}
               full
             >
               {initialValues.title ? 'Mettre à jour' : 'Publier'}

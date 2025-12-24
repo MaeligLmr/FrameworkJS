@@ -149,14 +149,15 @@ export const Profile = () => {
                         onClick={() => navigate(-1)}
                         noBorders
                         icon='arrow-left'
+                        rounded
                     >
-                        Retour
                     </Button>
                     {isOwnProfile && (
                         <Button
                             onClick={() => setIsSidebarOpen(true)}
                             noBorders
                             icon='ellipsis-vertical'
+                            rounded
                         >
                         </Button>
                     )}

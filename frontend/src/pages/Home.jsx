@@ -117,57 +117,57 @@ export const Home = () => {
         <h2 className="text-2xl font-bold mb-6">Articles récents</h2>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           {/* Barre de recherche et filtres */}
-            <div className="w-full">
-              <Input
-                type="text"
-                name="search"
-                label="Rechercher"
-                placeholder="Rechercher un article..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                icon={<i className="fas fa-search"></i>}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tri</label>
-              <Select
-                options={[
-                  { value: 'recent', label: 'Plus récents' },
-                  { value: 'oldest', label: 'Plus anciens' },
-                  { value: 'popular', label: 'Populaires' }
-                ]}
-                value={
-                  sort === 'recent' ? { value: 'recent', label: 'Plus récents' } :
-                    sort === 'oldest' ? { value: 'oldest', label: 'Plus anciens' } :
-                      sort === 'popular' ? { value: 'popular', label: 'Populaires' } :
-                        { value: 'popular', label: 'Populaires' }
-                }
-                onChange={(selected) => setSort(selected.value)}
-                className="w-full md:w-48 rounded-2xl" 
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    minHeight: '40px',
-                    borderRadius: '0.5rem',
-                    borderColor: state.isFocused ? '#4062BB' : base.borderColor,
-                    boxShadow: state.isFocused ? '0 0 0 1px #4062BB' : base.boxShadow,
-                    '&:hover': {
-                      borderColor: state.isFocused ? '#4062BB' : base.borderColor
-                    }
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected ? '#4062BB' : state.isFocused ? '#E8EFFF' : base.backgroundColor,
-                    color: state.isSelected ? 'white' : state.isFocused ? '#4062BB' : base.color,
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#4062BB' : '#E8EFFF',
-                      color: state.isSelected ? 'white' : '#4062BB'
-                    }
-                  })
-                }}
-              />
-            </div>
+          <div className="w-full">
+            <Input
+              type="text"
+              name="search"
+              label="Rechercher"
+              placeholder="Rechercher un article..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              icon={<i className="fas fa-search"></i>}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tri</label>
+            <Select
+              options={[
+                { value: 'recent', label: 'Plus récents' },
+                { value: 'oldest', label: 'Plus anciens' },
+                { value: 'popular', label: 'Populaires' }
+              ]}
+              value={
+                sort === 'recent' ? { value: 'recent', label: 'Plus récents' } :
+                  sort === 'oldest' ? { value: 'oldest', label: 'Plus anciens' } :
+                    sort === 'popular' ? { value: 'popular', label: 'Populaires' } :
+                      { value: 'popular', label: 'Populaires' }
+              }
+              onChange={(selected) => setSort(selected.value)}
+              className="w-full md:w-48 rounded-2xl"
+              styles={{
+                control: (base, state) => ({
+                  ...base,
+                  minHeight: '40px',
+                  borderRadius: '0.5rem',
+                  borderColor: state.isFocused ? '#4062BB' : base.borderColor,
+                  boxShadow: state.isFocused ? '0 0 0 1px #4062BB' : base.boxShadow,
+                  '&:hover': {
+                    borderColor: state.isFocused ? '#4062BB' : base.borderColor
+                  }
+                }),
+                option: (base, state) => ({
+                  ...base,
+                  backgroundColor: state.isSelected ? '#4062BB' : state.isFocused ? '#E8EFFF' : base.backgroundColor,
+                  color: state.isSelected ? 'white' : state.isFocused ? '#4062BB' : base.color,
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: state.isSelected ? '#4062BB' : '#E8EFFF',
+                    color: state.isSelected ? 'white' : '#4062BB'
+                  }
+                })
+              }}
+            />
+          </div>
         </div>
         {/* Boutons de catégorie scrollables */}
         <div className="w-full">

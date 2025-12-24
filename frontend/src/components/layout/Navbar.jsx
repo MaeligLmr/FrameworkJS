@@ -12,7 +12,7 @@ export const Navbar = () => {
   return (
     <>
     <nav className="gap-4 flex justify-between items-center w-full">
-        <Link to="/" className='text-[#2A407A] flex items-baseline home'><img src="/public/zentra.svg" alt="Z" className="w-8 h-auto" /></Link>
+        <Link to="/" className='rounded-full hover:bg-gray-100 p-1.25'><img src="/public/zentra.svg" alt="Z" className="w-8 h-8" /></Link>
         {authToken || user ? (
           <>
             <div className='flex gap-4 items-center'>
