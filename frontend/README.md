@@ -268,25 +268,6 @@ api.request(endpoint, options)
 2. Importer et utiliser dans le composant
 3. Gérer loading/error states
 
-## Dépannage courant
-
-### Token expiré
-L'utilisateur est automatiquement déconnecté
-
-### Image ne s'affiche pas
-- Vérifier que Cloudinary est configuré correctement en backend
-- Vérifier l'URL de l'image en console
-
-### Erreur CORS
-- Vérifier que le backend est lancé sur le bon port
-- Vérifier la configuration CORS en backend
-- Vérifier VITE_API_URL
-
-### Styles ne s'appliquent pas
-- Vérifier la configuration de Tailwind CSS
-- Vérifier que les fichiers sont dans `src/`
-- Restart le serveur Vite
-
 ## Conventions de code
 
 ### Nommage des fichiers
@@ -294,31 +275,4 @@ L'utilisateur est automatiquement déconnecté
 - Services/utils: **camelCase** (articleService.js)
 - Pages: **PascalCase** (ArticleDetail.jsx)
 
-### Imports
-```javascript
-// Ordre des imports:
-// 1. React et dépendances externes
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// 2. Services et utils
-import articleService from '../services/articleService';
-
-// 3. Composants
-import Button from '../components/common/Button';
-```
-
-### Props destructuring
-```javascript
-const ArticleCard = ({ article, onDelete, onEdit }) => {
-  // ...
-}
-```
-
-Exemple avec Nginx:
-```nginx
-location / {
-  try_files $uri $uri/ /index.html;
-}
-```
 

@@ -423,15 +423,4 @@ Toutes les réponses d'erreur retournent:
 - **multer** - Upload de fichiers
 - **jest** - Framework de test
 
-## Production
-
-Pour déployer en production:
-
-1. **Configurer les variables d'environnement** appropriées
-2. **Utiliser une base de données MongoDB** gérée (MongoDB Atlas)
-3. **Mettre en place HTTPS** avec un reverse proxy (Nginx)
-4. **Ajouter un rate limiter** pour les API publiques
-5. **Configurer CORS** correctement
-6. **Utiliser des tokens JWT** avec expiration courte
-7. **Monitoring** des erreurs et logs
 
