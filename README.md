@@ -160,26 +160,4 @@ Le `docker-compose.yml` contient déjà la configuration pour :
 
 Consultez le fichier pour les détails de configuration.
 
-## Dépannage
 
-### MongoDB ne se connecte pas
-- Vérifier que le service mongo est running: `docker ps`
-- Vérifier la chaîne de connexion MONGO_DB_URI
-- S'assurer que le port 27017 est disponible
-
-### Frontend ne charge pas
-- Vérifier que le backend est disponible sur http://localhost:3000
-- Vérifier la variable VITE_API_URL en frontend
-- Ouvrir la console du navigateur pour voir les erreurs
-
-### Images ne s'upload pas
-- Configurer les credentials Cloudinary dans l'environement du backend
-- Vérifier que le token JWT est valide
-
-## 📝 Licence
-
-ISC
-
-## 👤 Auteur
-
-Développé comme projet académique FrameworkJS 2025-2026.
